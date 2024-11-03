@@ -1,0 +1,151 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 60%;
+    margin: 20px auto;
+}
+
+h2, h3 {
+    color: #333;
+}
+
+.question-section, .reviews {
+    margin: 20px 0;
+}
+
+.question-section input[type="text"] {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    padding: 8px 12px;
+    background-color: #ffc107;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.write-review-button {
+    display: inline-block;
+    background-color: #ffc107;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.review-card {
+    background-color: #f5f5f5;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.star-rating {
+    color: #ffc107;
+}
+
+.username {
+    color: #333;
+}
+
+.review-content {
+    margin: 20px 0;
+    font-size: 1.1rem;
+}
+
+.review-actions {
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.review-actions a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.review-actions a:hover {
+    text-decoration: underline;
+}
+
+.delete-confirm-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.delete-confirm-container h2 {
+    font-size: 1.5rem;
+    color: #ff5555;
+}
+
+.confirm-delete-button {
+    background-color: #ff5555;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.cancel-delete-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.cancel-delete-link:hover {
+    text-decoration: underline;
+}
+
+/* Review Box Styles */
+.review-box {
+    max-width: 600px; /* Adjust width to suit your layout */
+    margin: auto;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.review-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+    margin-top: 10px;
+    white-space: nowrap; /* Prevents the text from overflowing */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+}
+
+.review-text.expand {
+    white-space: normal; /* Makes text wrap normally if expanded */
+    overflow: visible;
+    text-overflow: initial;
+}

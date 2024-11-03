@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Ratings and Comments</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'RatingandCommenting.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Questions & Replies</h2>
+        <div class="question-section">
+            <input type="text" placeholder="ask a question">
+            <button class="submit-button">Submit</button>
+        </div>
+
+        <h3>Reviews</h3>
+        <button class="write-review-button" onclick="window.location.href='{% url 'add_review' post.pk %}'">Write a Review</button>
+
+        <div class="reviews">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="star-rating">
+                            <!-- Display star rating dynamically -->
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span>&#9733;</span> <!-- Filled star -->
+                                {% else %}
+                                    <span>&#9734;</span> <!-- Empty star -->
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="username">{{ review.user.username|upper }}</span>
+                    </div>
+                    <div class="review-content">
+                        <p>{{ review.comment }}</p>
+                    </div>
+                    <div class="review-actions">
+                        {% if request.user == review.user %}
+                            <a href="{% url 'edit_review' review.pk %}">Edit</a> | 
+                            <a href="{% url 'delete_review' review.pk %}">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No reviews yet. Be the first to write a review!</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

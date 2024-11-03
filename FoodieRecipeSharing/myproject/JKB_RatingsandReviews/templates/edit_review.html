@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Review</title>
+    <link rel="stylesheet" href="{% static 'RatingandCommenting.css' %}">
+</head>
+<body>
+    <div class="edit-review-container">
+        <h2>Edit Your Review</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="rating">Rating</label>
+                {{ form.rating }}
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Your Review</label>
+                {{ form.comment }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-button">Save Changes</button>
+                <!-- Cancel button now uses review.post.pk directly -->
+                <a href="{% url 'post_detail' review.post.pk %}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

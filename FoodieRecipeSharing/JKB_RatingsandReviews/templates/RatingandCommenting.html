@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating and Commenting</title>
+    <link rel="stylesheet" href="{% static 'static/RatingandCommenting.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Questions & Replies</h2>
+        <form action="{% url 'post_question' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="question" placeholder="Ask a question" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <h3>Reviews</h3>
+        <form action="{% url 'post_review' %}" method="post">
+            {% csrf_token %}
+            <div class="rating">
+                {% for star in "12345" %}
+                <span class="star" data-value="{{ star }}">&#9733;</span>
+                {% endfor %}
+                <input type="hidden" name="rating" id="rating">
+            </div>
+            <textarea name="comment" placeholder="Write a review..." required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
+
+        {% for review in reviews %}
+        <div class="review">
+            <div class="stars">
+                {% for i in "12345" %}
+                <span class="{% if i <= review.rating %}star-filled{% endif %}">&#9733;</span>
+                {% endfor %}
+            </div>
+            <p>{{ review.comment }}</p>
+            <p>By {{ review.user.username }}</p>
+            <button onclick="location.href='{% url 'update_review' review.id %}'">Update</button>
+            <button onclick="location.href='{% url 'delete_review' review.id %}'">Delete</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function () {
+                document.getElementById('rating').value = this.getAttribute('data-value');
+                document.querySelectorAll('.star').forEach(s => s.classList.remove('star-filled'));
+                this.classList.add('star-filled');
+                let previousSiblings = [...this.parentNode.children].slice(0, [...this.parentNode.children].indexOf(this));
+                previousSiblings.forEach(s => s.classList.add('star-filled'));
+            });
+        });
+    </script>
+</body>
+</html>
