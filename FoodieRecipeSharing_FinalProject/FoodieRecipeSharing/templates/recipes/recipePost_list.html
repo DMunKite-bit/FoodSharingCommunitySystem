@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .recipe-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .recipe-details {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>All Recipes</h1>
+    </header>
+
+    <main>
+        <ul>
+            {% for post in posts %}
+                <li>
+                    {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100px; height: auto;">
+        {% endif %}
+        <p class="recipe-title">{{ post.title }}</p>
+        <!--<p class="recipe-details"><strong>Posted by:</strong> {{ post.user.username }}</p>-->
+        <p class="recipe-details"><strong>Difficulty:</strong> {{ post.difficulty }}</p>
+        <p class="recipe-details"><strong>Category:</strong> {{ post.category }}</p>
+        <p class="recipe-details"><strong>Description:</strong> {{ post.description }}</p>
+        <p class="recipe-details"><strong>Ingredients:</strong> {{ post.ingredients }}</p>
+        <p class="recipe-details"><strong>Directions:</strong> {{ post.directions }}</p>
+                </li>
+            {% empty %}
+                <li>No recipes available.</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{% url 'recipe_create' %}" class="button">Create New Recipe</a>
+    </main>
+</body>
+</html>
