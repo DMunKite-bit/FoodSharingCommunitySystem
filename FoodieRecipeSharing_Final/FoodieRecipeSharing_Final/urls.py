@@ -16,7 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Recipes.views import RecipePostCreateView, RecipePostListView, RecipePostUpdateView, RecipePostDeleteView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('recipelist', RecipePostListView.as_view(), name='recipe_list'),
+    path('new/', RecipePostCreateView.as_view(), name='recipe_create'),
+    path('<int:pk>/edit/', RecipePostUpdateView.as_view(), name='recipe_edit'),
+    path('<int:pk>/delete/', RecipePostDeleteView.as_view(), name='recipe_delete')
 ]
+
+if settings.DEBUG:  # This ensures it only runs in development
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

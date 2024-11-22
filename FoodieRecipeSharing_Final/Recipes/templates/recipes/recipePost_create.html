@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Recipe Post</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        form {
+            display: grid;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select, input[type="file"], input[type="number"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        textarea {
+            resize: none; /* Prevent resizing */
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        p {
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ADD A RECIPE</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Recipe Name -->
+            <input type="text" name="title" placeholder="Recipe Name">
+            
+            <!-- Description -->
+            <input type="text" name="description" placeholder="Description">
+            
+            <!-- Categories -->
+            <label for="category">CATEGORIES</label>
+            {{ form.category }}
+
+            <!-- Difficulty -->
+            <label for="difficulty">DIFFICULTY</label>
+            <input type="number" name="difficulty" id="difficulty" min="1" max="5" placeholder="Choose difficulty (1-5)">
+
+            <!-- Add Image -->
+            <label for="image">ADD IMAGE</label>
+            {{ form.image }}
+
+            <!-- Ingredients -->
+            <label for="ingredients">INGREDIENTS</label>
+            <hr>
+            <p>Enter your ingredients one at a time or paste them into the box below.</p>
+            {{ form.ingredients }}
+
+            <!-- Directions -->
+            <label for="directions">DIRECTIONS</label>
+            <hr>
+            <p>Enter your directions one at a time or paste them into the box below.</p>
+            {{ form.directions }}
+
+            <p>When you click Save, additional changes cannot be made until your recipe is published.</p>
+            <p>By clicking Save, you agree to our terms of service.</p>
+            <button type="submit">Save</button>
+        </form>
+        <a href="{% url 'recipe_list' %}" class="back-link">Back to Recipe List</a>
+    </div>
+</body>
+</html>
