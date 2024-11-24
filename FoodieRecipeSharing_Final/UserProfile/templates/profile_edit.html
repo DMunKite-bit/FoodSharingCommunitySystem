@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .form-header {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="form-header text-center">Edit Profile for {{ profile.user }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="bio">Bio:</label>
+            <input type="text" id="bio" name="bio" class="form-control" value="{{ profile.bio }}" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" class="form-control" value="{{ profile.location }}" required>
+        </div>
+        <div class="form-group">
+            <label for="birth_date">Birth Date:</label>
+            <input type="date" id="birth_date" name="birth_date" class="form-control" value="{{ profile.birth_date }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+    </form>
+    <div class="text-center">
+        <a href="{% url 'profile_list' %}" class="btn btn-secondary mt-3">Back to Profile List</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
