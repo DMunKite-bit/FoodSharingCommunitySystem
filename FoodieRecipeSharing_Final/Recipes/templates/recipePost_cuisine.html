@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuisine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .dropdown {
+            margin-bottom: 20px;
+        }
+        img {
+            width: 350px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .recipe-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            color: #333;
+        }
+        .recipe-details {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cuisine</h1>
+    
+    <!-- Dropdown for category selection -->
+    <div class="dropdown">
+        <form method="GET" action="">
+            <select name="category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                        {{ category }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    
+    <!-- Recipe list -->
+    <ul>
+        {% for recipe in recipes %}
+            <li>
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                {% endif %}
+                <p class="recipe-title">{{ recipe.title }}</p>
+                <p class="recipe-details"><strong>Difficulty:</strong> {{ recipe.difficulty }}</p>
+                <p class="recipe-details"><strong>Description:</strong> {{ recipe.description }}</p>
+                <p class="recipe-details"><strong>Category:</strong> {{ recipe.category }}</p>
+            </li>
+        {% empty %}
+            <li>No recipes found for the selected category.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

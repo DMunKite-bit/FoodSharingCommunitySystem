@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Recipes.views import RecipePostCreateView, RecipePostListView, RecipePostUpdateView, RecipePostDeleteView
+from Recipes.views import RecipePostCreateView, RecipePostListView, RecipePostUpdateView, RecipePostDeleteView, cuisine_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,7 +27,8 @@ urlpatterns = [
     path('recipelist', RecipePostListView.as_view(), name='recipe_list'),
     path('new/', RecipePostCreateView.as_view(), name='recipe_create'),
     path('<int:pk>/edit/', RecipePostUpdateView.as_view(), name='recipe_edit'),
-    path('<int:pk>/delete/', RecipePostDeleteView.as_view(), name='recipe_delete')
+    path('<int:pk>/delete/', RecipePostDeleteView.as_view(), name='recipe_delete'),
+    path('cuisine/', cuisine_view, name='recipe_cuisine')
 ]
 
 if settings.DEBUG:  # This ensures it only runs in development
