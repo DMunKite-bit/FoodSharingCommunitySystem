@@ -15,7 +15,7 @@ body {
 }
 
 header {
-  background-color: #8d1414;
+  background-color: #5e0909;
   color: #fff;
   padding: 20px;
 }
@@ -28,14 +28,17 @@ nav {
 
 nav a {
   color: #fff;
+  transform: scale(1.2);
   text-decoration: none;
   margin: 0 15px;
   font-size: 1rem;
   font-weight: bold;
   transition: color 0.3s;
+  
 }
 
 nav a:hover {
+  transform: scale(1.2);
   color: #ffcc00;
 }
 
@@ -62,35 +65,57 @@ main {
   margin-bottom: 15px;
 }
 
-.recipe-container {
+.recipe-list {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
+  flex-wrap: wrap; /* Allows wrapping to the next row if there are many items */
+  gap: 20px; /* Space between the boxes */
+  justify-content: center; /* Center the items horizontally */
+}
+
+.recipe-container {
+  position: relative;
+  width: 250px;
+  height: 200px;
   background: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border: 2px solid #4e1a1a; /* Gold border */
+  border-radius: 10px; /* Rounded corners */
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .recipe-container img {
-  width: 200px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.recipe-container div {
-  padding: 15px;
+.recipe-container:hover {
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
 
-.recipe-container h3 {
-  margin-top: 0;
-  color: #330000;
+/* Alt text overlay (same as before) */
+.recipe-container .alt-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: bold;
+  display: none; /* Hidden by default */
 }
 
-.recipe-container p {
-  margin-bottom: 0;
-  color: #666;
+.recipe-container:hover .alt-text {
+  display: block; /* Show overlay on hover */
 }
 
 .explore-container {
@@ -113,51 +138,93 @@ main {
 }
 
 .explore-container img {
-  width: 100px;
-  height: 100px;
+  width: 200px !important;  /* Force the size */
+  height: 200px !important; /* Force the size */
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 50%; /* Circular shape */
   margin-bottom: 10px;
-  border: 3px solid #ffcc00;
+  border: 3px solid #3a1c1c; /* Gold border */
 }
-
 .section a {
   display: inline-block;
   margin-top: 10px;
   color: #330000;
-  background: #ffcc00;
+  background: #f5f5f4;
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 5px;
   font-weight: bold;
   transition: background 0.3s, color 0.3s;
+  text-align: center;
+  width: auto; /* Ensures the width fits the content */
 }
 
+.section a img {
+  display: block; /* Makes the image behave like a block element */
+  margin: 0 auto 10px; /* Centers the image and adds space below */
+  max-width: 100%; /* Ensures the image doesn't exceed the container width */
+  height: auto; /* Keeps the aspect ratio intact */
+  width: 150px; /* Set desired size (you can increase this value for a larger image) */
+}
 .section a:hover {
   background: #330000;
   color: #fff;
 }
 
 a img {
-    height: 24px;
-    width: 24px;
+    height: 23px;
+    width: 23px;
     transition: transform 0.3s ease, filter 0.3s ease; /* Smooth transition for hover effects */
 }
 
-/* Hover effect for the icons */
-a img:hover {
-    transform: scale(1.2); /* Slightly enlarge the icon on hover */
-    filter: brightness(1.2); /* Brighten the icon */
-    cursor: pointer; /* Change cursor to pointer on hover */
-  </style>
+.quick-dinner-recipes {
+  position: relative;
+  margin-bottom: 40px;
+  background: url('{% static "images/background.jpg" %}') no-repeat center center;
+  background-size: cover;
+  height: 250px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.quick-dinner-recipes .recipe-banner {
+  text-align: center;
+  color: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+}
+
+.quick-dinner-recipes h1 {
+  font-size: 3rem;
+  margin: 0 0 15px;
+}
+
+.quick-dinner-recipes .see-all-btn {
+  background-color: #ffcc00;
+  color: #330000;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.quick-dinner-recipes .see-all-btn:hover {
+  background-color: #330000;
+  color: #fff;
+}
+  
+  
+</style>
 </head>
 <body>
   <header>
     <nav>
       <div>
         <a href="{% url 'HomePage:home' %}">FOODIE</a>
-
         </div>
       <div>
         <a href="{% url 'recipe_list' %}">RECIPES</a>
@@ -178,48 +245,46 @@ a img:hover {
     </nav>
   </header>
   <main>
+    <div class="section quick-dinner-recipes">
+      <div class="recipe-banner">
+        <h1>QUICK & EASY DINNER RECIPES</h1>
+        <a href="{% url 'recipe_cuisine' %}" class="see-all-btn">SEE THEM ALL</a>
+      </div>
+    </div>
     <div class="section">
       <h2>What We're You Craving</h2>
-      <div class="recipe-container">
-        <img src="profile/prawn-spaghetti.jpg" alt="Prawn Spaghetti">
-        <div>
-          <h3>Prawn Spaghetti</h3>
-          <p>Explore our quick and easy dinner recipes.</p>
+      <div class="recipe-list">
+        <div class="recipe-container">
+          <img src="{% static 'images/Prawn Spaghetti.jpg' %}" alt="Prawn Spaghetti">
+          <div class="alt-text">Prawn Spaghetti</div>
+        </div>
+        <div class="recipe-container">
+          <img src="{% static 'images/Garlic Chicken.jpg' %}" alt="Garlic Chicken">
+          <div class="alt-text">Garlic Chicken</div>
+        </div>
+        <div class="recipe-container">
+          <img src="{% static 'images/Salmon.jpg' %}" alt="Pan-Fried Salmon">
+          <div class="alt-text">Pan-Fried Salmon</div>
         </div>
       </div>
-      <div class="recipe-container">
-        <img src="garlic-chicken.jpg" alt="Garlic Chicken">
-        <div>
-          <h3>Garlic Chicken</h3>
-          <p>Explore our quick and easy dinner recipes.</p>
-        </div>
-      </div>
-      <div class="recipe-container">
-        <img src="pan-fried-salmon.jpg" alt="Pan-Fried Salmon">
-        <div>
-          <h3>Pan-Fried Salmon</h3>
-          <p>Explore our quick and easy dinner recipes.</p>
-        </div>
-      </div>
-      <a href="#">See Them All</a>
     </div>
     <div class="section">
       <h2>Explore More</h2>
       <div class="explore-container">
         <a href="#">
-          <img src="comfort-food.jpg" alt="Comfort Food">
+          <img src="{% static 'images/comfort food.png' %}" alt="Comfort Food">
           <p>Comfort Food</p>
         </a>
         <a href="#">
-          <img src="international-eats.jpg" alt="International Eats">
+          <img src="{% static 'images/international food.jpg' %}" alt="International Eats">
           <p>International Eats</p>
         </a>
         <a href="#">
-          <img src="breakfast-brunch.jpg" alt="Breakfast & Brunch">
+          <img src="{% static 'images/breakfast & brunch.jpg' %}" alt="Breakfast & Brunch">
           <p>Breakfast & Brunch</p>
         </a>
         <a href="#">
-          <img src="community-picks.jpg" alt="Community Picks">
+          <img src="{% static 'images/community picks.jpg' %}" alt="Community Picks">
           <p>Community Picks</p>
         </a>
       </div>
