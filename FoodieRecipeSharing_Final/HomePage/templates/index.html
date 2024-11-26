@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +15,7 @@ body {
 }
 
 header {
-  background-color: #330000;
+  background-color: #8d1414;
   color: #fff;
   padding: 20px;
 }
@@ -136,7 +137,20 @@ main {
   background: #330000;
   color: #fff;
 }
+
+a img {
+    height: 24px;
+    width: 24px;
+    transition: transform 0.3s ease, filter 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Hover effect for the icons */
+a img:hover {
+    transform: scale(1.2); /* Slightly enlarge the icon on hover */
+    filter: brightness(1.2); /* Brighten the icon */
+    cursor: pointer; /* Change cursor to pointer on hover */
   </style>
+
 </head>
 <body>
   <header>
@@ -148,9 +162,15 @@ main {
         <a href="{% url 'recipe_cuisine' %}">CUISINE</a>
       </div>
       <div>
-        <a href="#">Search</a>
-        <a href="#">Bookmark</a>
-        <a href="{% url 'UserProfile:profile_list' %}">Account</a>
+        <a href="#">
+          <img src="{% static 'images/Search.png' %}" alt="Search" >
+        </a>
+        <a href="#">
+          <img src="{% static 'images/Bookmark.png' %}" alt="Bookmark">
+        </a>
+        <a href="{% url 'UserProfile:profile_list' %}">
+          <img src="{% static 'images/Account.png' %}" alt="Account">
+        </a>
       </div>
     </nav>
   </header>
