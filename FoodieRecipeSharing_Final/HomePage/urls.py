@@ -4,5 +4,5 @@ from . import views
 app_name = 'HomePage'
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Root URL points to the index view
+    path('', views.index, name='home'),  # Root URL points to the index view
 ]

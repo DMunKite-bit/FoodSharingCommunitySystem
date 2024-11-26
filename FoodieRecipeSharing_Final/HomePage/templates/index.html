@@ -155,7 +155,10 @@ a img:hover {
 <body>
   <header>
     <nav>
-      <div>FOODIE</div>
+      <div>
+        <a href="{% url 'HomePage:home' %}">FOODIE</a>
+
+        </div>
       <div>
         <a href="{% url 'recipe_list' %}">RECIPES</a>
         <a href="#">POPULAR</a>
