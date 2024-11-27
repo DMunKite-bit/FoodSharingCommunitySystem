@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
             margin: 10px auto;
             padding: 20px;
             background-color: #f9f9f9;
@@ -93,10 +92,12 @@
     </style>
 </head>
 <body>
-    <header>
+    <header>     <!-- Include Navbar -->
+        {% include 'navbar.html' %}</header>
+    <body>
         <h1>Filipino Recipes</h1>
         <a href="{% url 'recipe_create' %}" class="button">Create New Recipe</a>
-    </header>
+    </body>
 
     <main>
         <ul>
@@ -122,6 +123,7 @@
             {% empty %}
                 <li>No recipes available.</li>
             {% endfor %}
+            {% include 'footer.html' %}
         </ul>
     </main>
 </body>
