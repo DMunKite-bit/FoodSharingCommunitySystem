@@ -7,17 +7,30 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
+            margin: 10px auto;
             padding: 20px;
             background-color: #f9f9f9;
         }
+
         h1 {
             color: #333;
+            text-align: center;
         }
-        .dropdown {
-            margin-bottom: 20px;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
         }
+
+        li {
+            padding: 50px;
+            margin: 40px 0;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
         img {
             width: 350px;
             height: auto;
@@ -25,41 +38,55 @@
             display: block;
             border-radius: 8px;
         }
-        select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            padding: 15px;
-            margin: 10px 0;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+
         .recipe-title {
             font-size: 1.5em;
             font-weight: bold;
             margin: 20px 0 10px;
             color: #333;
         }
+
         .recipe-details {
-            font-size: 0.9em;
+            font-size: 1em;
             color: #555;
-            margin-top: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .ingredients,
+        .directions {
+            text-align: justify;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+    <header>     <!-- Include Navbar -->
+        {% include 'navbar.html' %}
+    </header>
+
     <h1>Cuisine</h1>
     
     <!-- Dropdown for category selection -->
-    <div class="dropdown">
+    <div class="dropdown" style="text-align: center; margin-bottom: 20px;">
         <form method="GET" action="">
             <select name="category" onchange="this.form.submit()">
                 <option value="">All Categories</option>
@@ -73,20 +100,30 @@
     </div>
     
     <!-- Recipe list -->
-    <ul>
-        {% for recipe in recipes %}
-            <li>
-                {% if recipe.image %}
-                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-                {% endif %}
-                <p class="recipe-title">{{ recipe.title }}</p>
-                <p class="recipe-details"><strong>Difficulty:</strong> {{ recipe.difficulty }}</p>
-                <p class="recipe-details"><strong>Description:</strong> {{ recipe.description }}</p>
-                <p class="recipe-details"><strong>Category:</strong> {{ recipe.category }}</p>
-            </li>
-        {% empty %}
-            <li>No recipes found for the selected category.</li>
-        {% endfor %}
-    </ul>
+    <main>
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                    {% endif %}
+                    <p class="recipe-title">{{ recipe.title }}</p>
+                    <p class="recipe-details"><strong>DIFFICULTY:</strong> {{ recipe.difficulty }}</p>
+                    <p class="recipe-details"><strong>Description:</strong> {{ recipe.description }}</p>
+                    <p class="recipe-details"><strong>Category:</strong> {{ recipe.category }}</p>
+                    <div class="ingredients">
+                        <strong>Ingredients:</strong>
+                        <p>{{ recipe.ingredients }}</p>
+                    </div>
+                    <div class="directions">
+                        <strong>Directions:</strong>
+                        <p>{{ recipe.directions }}</p>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No recipes found for the selected category.</li>
+            {% endfor %}
+        </ul>
+    </main>
 </body>
 </html>
