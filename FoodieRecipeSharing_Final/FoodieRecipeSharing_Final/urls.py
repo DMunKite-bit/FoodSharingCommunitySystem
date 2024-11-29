@@ -19,6 +19,7 @@ from django.urls import path, include
 from Recipes.views import RecipePostCreateView, RecipePostListView, RecipePostUpdateView, RecipePostDeleteView, cuisine_view
 from django.conf import settings
 from django.conf.urls.static import static
+from Recipes import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,7 +29,9 @@ urlpatterns = [
     path('new/', RecipePostCreateView.as_view(), name='recipe_create'),
     path('<int:pk>/edit/', RecipePostUpdateView.as_view(), name='recipe_edit'),
     path('<int:pk>/delete/', RecipePostDeleteView.as_view(), name='recipe_delete'),
-    path('cuisine/', cuisine_view, name='recipe_cuisine')
+    path('cuisine/', cuisine_view, name='recipe_cuisine'),
+    path('recipes/', include('Recipes.urls')),
+    path('category/<str:category>/', views.recipes_by_category, name='recipes_by_category'),
 ]
 
 if settings.DEBUG:  # This ensures it only runs in development
