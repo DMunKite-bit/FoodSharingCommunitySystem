@@ -108,6 +108,7 @@
                         <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
                     {% endif %}
                     <p class="recipe-title">{{ recipe.title }}</p>
+                    <p class="recipe-details"><strong>Posted by:</strong> {{ recipe.user.username }}</p>
                     <p class="recipe-details"><strong>DIFFICULTY:</strong> {{ recipe.difficulty }}</p>
                     <p class="recipe-details"><strong>Description:</strong> {{ recipe.description }}</p>
                     <p class="recipe-details"><strong>Category:</strong> {{ recipe.category }}</p>
