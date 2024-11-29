@@ -108,6 +108,7 @@
                         <img src="{{ post.image.url }}" alt="{{ post.title }}">
                     {% endif %}
                     <p class="recipe-title">{{ post.title }}</p>
+                    <p class="recipe-details"><strong>Posted by:</strong> {{ post.user.username }}</p>
                     <p class="recipe-details"><strong>DIFFICULTY:</strong> {{ post.difficulty }}</p>
                     <p class="recipe-details">{{ post.description }}</p>
                     <div class="ingredients">
@@ -118,8 +119,11 @@
                         <strong>Directions:</strong>
                         <p>{{ post.directions }}</p>
                     </div>
-                    <a href="{% url 'recipe_edit' post.pk %}" class="btn btn-primary">Edit</a>
-                    <a href="{% url 'recipe_delete' post.pk %}" class="btn btn-danger">Delete</a>
+                    <!-- Show Edit and Delete buttons only if the logged-in user is the creator -->
+                    {% if post.user == request.user %}
+                        <a href="{% url 'recipe_edit' post.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'recipe_delete' post.pk %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
                 </li>
             {% empty %}
                 <li>No recipes available.</li>
