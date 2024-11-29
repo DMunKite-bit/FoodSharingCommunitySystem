@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratings & Reviews</title>
+    <link rel="stylesheet" href="{% static 'RatingsAndReview.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <h1>Ratings & Reviews</h1>
+    </header>
+
+    <main>
+        <a href="{% url 'add_review' post.pk %}" class="write-review-btn" aria-label="Write a review">Write a Review</a>
+
+        <section class="reviews" aria-label="User reviews">
+            {% for review in reviews %}
+                <article class="review">
+                    <div class="review-header">
+                        <!-- Display the username -->
+                        <span class="user-name">{{ review.user.username|title }}</span>
+                    </div>
+
+                    <!-- Display the review title below the username -->
+                    <h3 class="review-title">{{ review.title }}</h3>
+
+                    <!-- Display the rating as stars, aligned to the top-right -->
+                    <div class="stars" aria-label="{{ review.rating }} out of 5 stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i> <!-- Filled star -->
+                            {% else %}
+                                <i class="far fa-star"></i> <!-- Empty star -->
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Display the comment -->
+                    <p class="review-text">{{ review.comment }}</p>
+
+                    <!-- Edit/Delete buttons if the logged-in user owns the review -->
+                    {% if request.user == review.user %}
+                        <div class="review-actions">
+                            <a href="{% url 'edit_review' review.pk %}" class="edit-btn" aria-label="Edit review">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'delete_review' review.pk %}" class="delete-btn" aria-label="Delete review">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p>No reviews yet. Be the first to write a review!</p>
+            {% endfor %}
+        </section>
+        
+    </main>
+
+    <footer>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </footer>
+</body>
+</html>
