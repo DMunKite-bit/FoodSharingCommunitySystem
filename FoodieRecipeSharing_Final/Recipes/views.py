@@ -60,22 +60,3 @@ def cuisine_view(request):
         'selected_category': selected_category,
     }
     return render(request, 'recipePost_cuisine.html', context)
-
-    # Recipe list view for a specific category
-def category_recipes(request, category):
-    recipes = RecipePost.objects.filter(category=category)
-    context = {
-        'recipes': recipes,
-        'category': category,
-    }
-    return render(request, 'recipes/category_recipes.html', context)
-
-    # Recipe detail view
-def recipe_detail(request, recipe_id):
-    recipe = RecipePost.objects.get(id=recipe_id)
-    context = {'recipe': recipe}
-    return render(request, 'recipes/recipe_detail.html', context)
-
-def recipes_by_category(request, category):
-    recipes = RecipePost.objects.filter(category=category)
-    return render(request, 'Recipes/category_recipes.html', {'recipes': recipes, 'category': category})
