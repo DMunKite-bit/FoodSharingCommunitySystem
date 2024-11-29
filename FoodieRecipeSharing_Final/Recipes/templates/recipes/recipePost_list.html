@@ -108,6 +108,7 @@
                         <img src="{{ post.image.url }}" alt="{{ post.title }}">
                     {% endif %}
                     <p class="recipe-title">{{ post.title }}</p>
+                    <p class="recipe-details"><strong>Posted by:</strong> {{ post.user.username }}</p>
                     <p class="recipe-details"><strong>DIFFICULTY:</strong> {{ post.difficulty }}</p>
                     <p class="recipe-details">{{ post.description }}</p>
                     <div class="ingredients">
