@@ -1,5 +1,3 @@
-from django.forms import BaseModelForm
-from django.http import HttpResponse
 from django.urls import reverse_lazy  # type: ignore
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView  # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore # Add this import
@@ -12,34 +10,22 @@ class RecipePostListView(ListView):
     template_name = 'recipes/recipePost_list.html'
     context_object_name = 'posts'
 
-class RecipePostCreateView(LoginRequiredMixin, CreateView):  # Add LoginRequiredMixin
+class RecipePostCreateView(CreateView):  # Add LoginRequiredMixin
     model = RecipePost
     form_class = RecipePostForm
     template_name = 'recipes/recipePost_create.html'
     success_url = reverse_lazy('recipe_list')
 
-    def form_valid(self, form):
-        form.instance.user=self.request.user
-        return super().form_valid(form)
-
-class RecipePostUpdateView(LoginRequiredMixin, UpdateView):
+class RecipePostUpdateView(UpdateView):
     model = RecipePost
     form_class = RecipePostForm
     template_name = 'recipes/recipePost_update.html'
     success_url = reverse_lazy('recipe_list')
 
-    def get_queryset(self):
-        # Restrict updates to recipes owned by the logged-in user
-        return self.model.objects.filter(user=self.request.user)
-
-class RecipePostDeleteView(LoginRequiredMixin, DeleteView):
+class RecipePostDeleteView(DeleteView):
     model = RecipePost
     template_name = 'recipes/recipePost_confirm_delete.html'
     success_url = reverse_lazy('recipe_list')
-
-    def get_queryset(self):
-        # Restrict deletions to recipes owned by the logged-in user
-        return self.model.objects.filter(user=self.request.user)
 
 def cuisine_view(request):
     # Get all unique categories from the RecipePost model
