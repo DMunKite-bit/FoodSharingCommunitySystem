@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator # type: ignore
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 
 from django.conf import settings # type: ignore
@@ -48,5 +47,4 @@ class RecipePost(models.Model):
     created_at = models.DateTimeField(auto_now=True)  # Timestamp of creation
 
     def __str__(self):
-        return self.title
         return self.title  # String representation of the model

@@ -41,6 +41,7 @@ urlpatterns = [
     path('post/<int:post_pk>/add_review/', add_review, name='add_review'),
     path('review/<int:pk>/edit/', edit_review, name='edit_review'),
     path('review/<int:pk>/delete/', delete_review, name='delete_review'),
+    path('recipes/', include('Recipes.urls')),
     path('', lambda request: redirect('login/', permanent=False)),  # Root URL redirect to '/home/'
 ]
 

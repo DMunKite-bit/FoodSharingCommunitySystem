@@ -3,7 +3,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView  #
 from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore # Add this import
 from .models import RecipePost
 from .forms import RecipePostForm
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
+
 
 class RecipePostListView(ListView):
     model = RecipePost
@@ -58,3 +60,7 @@ def cuisine_view(request):
         'selected_category': selected_category,
     }
     return render(request, 'recipePost_cuisine.html', context)
+
+def recipe_detail(request, pk):
+    recipe = get_object_or_404(RecipePost, pk=pk)
+    return render(request, 'recipes/recipe_details.html', {'recipe': recipe})
