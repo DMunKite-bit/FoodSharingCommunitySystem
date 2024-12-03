@@ -98,10 +98,11 @@
         <p><strong>Posted by:</strong> {{ recipe.user }}</p>
         <p><strong>Difficulty:</strong>
           <span class="difficulty-stars">
-            {% for i in 1..recipe.difficulty %}
+            {% load custom_filters %}
+            {% for i in recipe.difficulty|range_star %}
               <span>★</span>
             {% endfor %}
-            {% for i in recipe.difficulty..5 %}
+            {% for i in 5|range_star|slice:":recipe.difficulty" %}
               <span class="empty">★</span>
             {% endfor %}
           </span>

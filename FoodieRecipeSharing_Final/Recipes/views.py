@@ -1,3 +1,5 @@
+#Recipes/views.py
+
 from django.urls import reverse_lazy  # type: ignore
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView  # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore # Add this import
@@ -58,9 +60,19 @@ def cuisine_view(request):
         'categories': categories,
         'recipes': recipes,
         'selected_category': selected_category,
+        'show_dropdown': True,  # Show dropdown for general browsing
     }
     return render(request, 'recipePost_cuisine.html', context)
 
 def recipe_detail(request, pk):
     recipe = get_object_or_404(RecipePost, pk=pk)
     return render(request, 'recipes/recipe_details.html', {'recipe': recipe})
+
+def recipe_by_category(request, category):
+    recipes = RecipePost.objects.filter(category=category)
+    context = {
+        'recipes': recipes,
+        'selected_category': category,
+        'show_dropdown': False,  # Hide dropdown for "Explore More"
+    }
+    return render(request, 'recipePost_cuisine.html', context)

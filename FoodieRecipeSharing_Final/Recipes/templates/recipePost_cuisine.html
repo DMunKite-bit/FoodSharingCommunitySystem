@@ -85,20 +85,21 @@
 
     <h1>Cuisine</h1>
     
-    <!-- Dropdown for category selection -->
-    <div class="dropdown" style="text-align: center; margin-bottom: 20px;">
-        <form method="GET" action="">
-            <select name="category" onchange="this.form.submit()">
-                <option value="">All Categories</option>
-                {% for category in categories %}
-                    <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
-                        {{ category }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-    
+<!-- Dropdown for category selection -->
+{% if show_dropdown %}
+<div class="dropdown" style="text-align: center; margin-bottom: 20px;">
+    <form method="GET" action="">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+{% endif %}
     <!-- Recipe list -->
     <main>
         <ul>
