@@ -13,7 +13,7 @@ def recipe_detail(request, recipe_id):
     return render(request, 'recipe_details.html', {'recipe': recipe})
 
 def index(request):
-    recipes = RecipePost.objects.all()[:3]  # Fetch the first three recipes
+    recipes = RecipePost.objects.all()[:8]  # Fetch the first six recipes
     return render(request, 'index.html', {'recipes': recipes})
 
 # Create your views here.

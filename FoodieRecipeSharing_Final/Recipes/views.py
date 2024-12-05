@@ -76,3 +76,10 @@ def recipe_by_category(request, category):
         'show_dropdown': False,  # Hide dropdown for "Explore More"
     }
     return render(request, 'recipePost_cuisine.html', context)
+
+def recipe_list(request):
+    posts = RecipePost.objects.all()  # or whatever your queryset is
+    for post in posts:
+        if post.difficulty is None:
+            post.difficulty = 0  # You can set a default value if no difficulty is provided
+    return render(request, 'recipe_list.html', {'posts': posts})

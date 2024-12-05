@@ -124,8 +124,8 @@ nav img:hover {
     }
 
     .recipe-container img {
-      width: 100%;
-      height: 100%;
+      width: 250px !important;
+      height: 250px !important;
       object-fit: cover;
     }
 
@@ -268,7 +268,7 @@ nav img:hover {
       </div>
       <div>
         <a href="{% url 'recipe_list' %}">RECIPES</a>
-        <a href="#">POPULAR</a>
+        <a href="{% url 'popular' %}">POPULAR</a>
         <a href="{% url 'recipe_cuisine' %}">CUISINE</a>
       </div>
       <div>

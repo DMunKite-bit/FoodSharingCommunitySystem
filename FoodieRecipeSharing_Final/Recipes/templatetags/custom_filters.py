@@ -1,8 +1,9 @@
+# custom_filters.py
 from django import template
 
 register = template.Library()
 
 @register.filter
 def range_star(value):
-    # Limit the stars to a maximum of 5
-    return range(1, min(value, 5) + 1)
+    """Returns a list of numbers from 0 to value-1"""
+    return range(value)
