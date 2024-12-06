@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarked Recipes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 30px;
+            margin: 20px 0;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        img {
+            width: 250px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
+        }
+        .recipe-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            text-align: center;
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn-danger:hover {
+            background-color: #a71d2a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Include Navbar -->
+        {% include 'navbar.html' %}
+    </header>
+    <main>
+        <h1>My Bookmarked Recipes</h1>
+        <ul>
+            {% for bookmark in bookmarks %}
+                <li>
+                    {% if bookmark.recipe.image %}
+                        <img src="{{ bookmark.recipe.image.url }}" alt="{{ bookmark.recipe.title }}">
+                    {% endif %}
+                    <p class="recipe-title">{{ bookmark.recipe.title }}</p>
+                    <p><strong>Posted by:</strong> {{ bookmark.recipe.user.username }}</p>
+                    <p><strong>Category:</strong> {{ bookmark.recipe.category }}</p>
+                    <p><strong>Difficulty:</strong> {{ bookmark.recipe.difficulty }}</p>
+                    <a href="{% url 'recipe_detail' bookmark.recipe.pk %}" class="button">View Recipe</a>
+                    <form method="POST" action="{% url 'remove_bookmark' bookmark.recipe.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger">Remove Bookmark</button>
+                    </form>
+                </li>
+            {% empty %}
+                <li>No bookmarks available.</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

@@ -1,3 +1,4 @@
+<!-- Updated Recipe List HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
     <title>Recipe List</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /* Original styles */
         body {
             font-family: Arial, sans-serif;
             margin: 10px auto;
@@ -54,20 +56,6 @@
             padding: 10px;
             border-radius: 4px;
         }
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            color: #fff;
-            background-color: #007bff;
-            text-decoration: none;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
         .btn {
             display: inline-block;
             margin: 10px 5px;
@@ -98,55 +86,23 @@
         }
         .review-item {
             margin-bottom: 10px;
-        }
-        /* Review section styles */
-        .review-list {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-        }
- 
-        .review-item {
-            margin-bottom: 10px;
             padding: 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-            font-family: 'Poppins', sans-serif; /* Apply Poppins only to the review section */
         }
- 
-        .review-item strong {
-            font-weight: 600;
-            font-size: 1.1em;
-            color: #333;
-        }
- 
-        .review-item p {
-            font-size: 1em;
-            color: #555;
-            margin-top: 5px;
-            line-height: 1.5;
-        }
- 
-        .review-list strong {
-            font-size: 1.2em;
-            color: #333;
+        .bookmark-section {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-   
-        {% include 'navbar.html' %}
-   
- 
+    {% include 'navbar.html' %}
+
     <main>
         <h1>Filipino Recipes</h1>
         <a href="{% url 'recipe_create' %}" class="button">Create New Recipe</a>
- 
+
         <ul>
             {% for post in posts %}
                 <li>
@@ -165,7 +121,13 @@
                         <strong>Directions:</strong>
                         <p>{{ post.directions }}</p>
                     </div>
- 
+
+                    <!-- Show Edit and Delete buttons only if the logged-in user is the creator -->
+                    {% if post.user == request.user %}
+                        <a href="{% url 'recipe_edit' post.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'recipe_delete' post.pk %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+
                     <!-- Reviews Section -->
                     <div id="reviews-{{ post.id }}" class="review-list">
                         <strong>Reviews:</strong>
@@ -175,16 +137,29 @@
                                     <strong>{{ review.user.username }}:</strong> {{ review.text }}
                                 </li>
                             {% empty %}
-                               
+                                <li>No reviews yet.</li>
                             {% endfor %}
                         </ul>
+                        <button class="btn btn-primary" onclick="toggleReviewForm({{ post.id }})">Add a Review</button>
+                        <div id="review-form-{{ post.id }}" style="display: none; margin-top: 10px;">
+                            <textarea id="review-input-{{ post.id }}" rows="3" placeholder="Write your review..."></textarea>
+                            <button class="btn btn-primary" onclick="submitReview({{ post.id }})">Submit</button>
+                        </div>
                     </div>
- 
-                    <button class="btn btn-primary" onclick="toggleReviewForm({{ post.id }})">Add a Review</button>
-                   
-                    <div id="review-form-{{ post.id }}" style="display: none; margin-top: 10px;">
-                        <textarea id="review-input-{{ post.id }}" rows="3" placeholder="Write your review..."></textarea>
-                        <button class="btn btn-primary" onclick="submitReview({{ post.id }})">Submit</button>
+
+                    <!-- Bookmark Section -->
+                    <div class="bookmark-section">
+                        {% if post.id in bookmarked_recipes %}
+                            <form method="post" action="{% url 'remove_bookmark' post.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Unbookmark</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'add_bookmark' post.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Bookmark</button>
+                            </form>
+                        {% endif %}
                     </div>
                 </li>
             {% empty %}
@@ -192,58 +167,51 @@
             {% endfor %}
         </ul>
     </main>
- 
+
     <footer>
         {% include 'footer.html' %}
     </footer>
- 
+
     <script>
         function toggleReviewForm(postId) {
             const form = document.getElementById(`review-form-${postId}`);
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
- 
+
         function submitReview(postId) {
             const reviewText = document.getElementById(`review-input-${postId}`).value.trim();
             if (!reviewText) {
                 alert("Review cannot be empty.");
                 return;
             }
-       
-            const csrfToken = '{{ csrf_token }}';
-           
+
             fetch(`/add_review/${postId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
+                    'X-CSRFToken': '{{ csrf_token }}',
                 },
                 body: JSON.stringify({ text: reviewText }),
             })
             .then(response => {
-                console.log("Response status:", response.status);
                 if (!response.ok) {
                     throw new Error("Failed to submit review. Please try again.");
                 }
                 return response.json();
             })
             .then(data => {
-                console.log("Response data:", data);
                 if (data.success) {
                     const reviewsDiv = document.getElementById(`reviews-${postId}`);
                     reviewsDiv.querySelector('ul').innerHTML += `
                         <li class="review-item">
-                            <strong>${data.username}:</strong> ${data.review} <small>(${data.created_at})</small>
+                            <strong>${data.username}:</strong> ${data.review}
                         </li>`;
                     document.getElementById(`review-input-${postId}`).value = '';
                 } else {
-                    alert(data.error || 'Error submitting review');
+                    alert(data.error || 'Error submitting review.');
                 }
             })
-            .catch(error => {
-                alert(error.message);
-                console.error("Error submitting review:", error);
-            });
+            .catch(error => alert(error.message));
         }
     </script>
 </body>
