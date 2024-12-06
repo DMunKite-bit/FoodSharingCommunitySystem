@@ -1,3 +1,4 @@
+#Recipes/views.py
 from django.urls import reverse_lazy  # type: ignore
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView  # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore # Add this import
@@ -7,6 +8,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 import json
  
 
@@ -151,3 +153,29 @@ def remove_bookmark(request, recipe_id):
 def bookmark_list(request):
     bookmarks = Bookmark.objects.filter(user=request.user).select_related('recipe')
     return render(request, 'recipes/bookmarks_list.html', {'bookmarks': bookmarks})
+
+def search_recipes(request):
+    # Display some initial recipes before search
+    initial_recipes = RecipePost.objects.all()[:6]  # First 6 recipes
+    
+    # Check if there's a search query
+    query = request.GET.get('q', '').strip()
+    
+    if query:
+        # Search across multiple fields
+        recipes = RecipePost.objects.filter(
+            Q(title__icontains=query) |  # Search in title
+            Q(ingredients__icontains=query) |  # Search in ingredients
+            Q(description__icontains=query) |  # Search in description
+            Q(category__icontains=query)  # Search in category
+        )
+    else:
+        recipes = initial_recipes
+    
+    context = {
+        'recipes': recipes,
+        'query': query,
+        'show_initial_results': not bool(query)  # Flag to show initial recipes
+    }
+    
+    return render(request, 'recipes/search_recipes.html', context)

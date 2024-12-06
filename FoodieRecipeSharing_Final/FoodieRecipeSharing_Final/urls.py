@@ -46,6 +46,7 @@ urlpatterns = [
     path('profile/edit/', edit_profile, name='edit_profile'),
     path('recipes/<str:category>/', recipe_by_category, name='recipe_by_category'),
     path('popular', popular, name='popular'),
+    path('recipes/', include('Recipes.urls')),
 ]
  
  
