@@ -124,8 +124,8 @@ nav img:hover {
     }
 
     .recipe-container img {
-      width: 250px !important;
-      height: 250px !important;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
 
@@ -257,6 +257,51 @@ nav img:hover {
       color: #fff;
     }
 
+    /* Profile Dropdown Styling */
+    .profile-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+     
+    .profile-dropdown img {
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+     
+    .profile-dropdown:hover img {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+     
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #ffffff;
+      min-width: 150px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+     
+    .dropdown-content a {
+      color: #330000;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s, color 0.3s;
+    }
+     
+    .dropdown-content a:hover {
+      background-color: #330000;
+      color: #fff;
+    }
+     
+    .profile-dropdown:hover .dropdown-content {
+      display: block;
+    }
+
   </style>
 </head>
 <body>
@@ -278,9 +323,16 @@ nav img:hover {
         <a href="#">
           <img src="{% static 'images/Bookmark.png' %}" alt="Bookmark">
         </a>
-        <a href="#">
-          <img src="{% static 'images/Account.png' %}" alt="Account">
+        <div class="profile-dropdown">
+          <a href="#">
+            <img src="{% static 'images/Account.png' %}" alt="Account">
+          </a>
+          <div class="dropdown-content">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+          </div>
         </a>
+      </div>
       </div>
     </nav>
   </header>

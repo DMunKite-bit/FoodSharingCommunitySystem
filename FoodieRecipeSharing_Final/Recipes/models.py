@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator # type: ignore
 from django.conf import settings
-
+ 
 from django.conf import settings # type: ignore
 # Create your models here.
 class RecipePost(models.Model):
@@ -23,9 +23,9 @@ class RecipePost(models.Model):
     ]
     title = models.CharField(max_length=200)  # Recipe title
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True
     )  # Associated user, nullable and optional
     difficulty = models.IntegerField(
@@ -33,18 +33,27 @@ class RecipePost(models.Model):
     )  # Difficulty level (1-5)
     description = models.TextField(default='')  # Brief description of the recipe
     category = models.CharField(
-        max_length=50, 
-        choices=CATEGORY_CHOICES, 
+        max_length=50,
+        choices=CATEGORY_CHOICES,
         default='Uncategorized'
     )  # Recipe category with predefined choices
     ingredients = models.TextField()  # Ingredients list
     directions = models.TextField(default='')  # Step-by-step directions
     image = models.ImageField(
-        upload_to='recipe/images/', 
-        blank=True, 
+        upload_to='recipe/images/',
+        blank=True,
         null=True
     )  # Optional recipe image
     created_at = models.DateTimeField(auto_now=True)  # Timestamp of creation
-
+ 
     def __str__(self):
         return self.title  # String representation of the model
+   
+class Review(models.Model):
+    recipe = models.ForeignKey(RecipePost, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+ 
+    def __str__(self):
+        return f'Review by {self.user.username} on {self.recipe.title}'

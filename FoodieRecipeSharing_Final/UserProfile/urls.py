@@ -1,13 +1,12 @@
-# user_profile/urls.py
 from django.urls import path
-from .views import profile_list, profile_detail, profile_create, profile_update, profile_delete
 from . import views
-
-app_name = 'UserProfile'
+from django.conf import settings
+from django.conf.urls.static import static
+ 
 urlpatterns = [
-    path('profiles/', views.profile_list, name='profile_list'),
-    path('profile/<str:username>/', profile_detail, name='profile_detail'),
-    path('create/', profile_create, name='profile_create'),
-    path('edit/<str:username>/', profile_update, name='profile_update'),
-    path('delete/<str:username>/', profile_delete, name='profile_delete'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -41,9 +41,8 @@ INSTALLED_APPS = [
     'LogIn',
     'HomePage',
     'Recipes',
-    'RatingsAndReview',
     'popular',
-
+    'UserProfile',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Profile View</title>
+    <style>
+      /* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f6f1;
+    color: #333;
+}
+ 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+ 
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
+    position: relative; /* Add relative positioning to allow absolute positioning of the button */
+}
+ 
+.profile-image {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    margin-right: 20px;
+    border-radius: 8px;
+    overflow: hidden; /* Ensure the image stays inside the box */
+}
+ 
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image fills the box without distortion */
+}
+ 
+.profile-details {
+    display: flex;
+    flex-direction: column;
+}
+ 
+.profile-details .username {
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+ 
+.profile-details .joined {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 10px;
+}
+ 
+/* Bio section */
+.bio {
+    font-size: 1rem;
+    color: #1f1f1f; /* Gray color for the bio text */
+    margin-top: 10px;
+}
+ 
+/* Main Layout */
+.layout {
+    display: flex;
+    margin-top: 20px;
+}
+ 
+/* Filters */
+.filters {
+    width: 25%;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+}
+ 
+.filters h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+ 
+.filters ul {
+    list-style: none;
+    padding: 0;
+}
+ 
+.filters ul li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+ 
+.filters ul li:hover {
+    background-color: #f0f0f0;
+}
+ 
+/* Activity Section */
+.activity-section {
+    width: 75%;
+    padding: 20px;
+    text-align: center;
+}
+ 
+.activity-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+ 
+.activity-section .no-activity {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    color: #777;
+}
+ 
+.activity-section .icon {
+    font-size: 5rem;
+    color: #333;
+}
+ 
+/* Button Styles */
+.edit-profile-btn {
+    background-color: #f08a5d; /* Coral color */
+    color: white;
+    padding: 8px 15px; /* Smaller padding */
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem; /* Smaller font size */
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    position: absolute; /* Position it absolutely */
+    top: 20px; /* Position it 20px from the top */
+    right: 20px; /* Position it 20px from the right */
+    text-decoration: none;
+}
+ 
+.edit-profile-btn:hover {
+    background-color: #e07b4b; /* Darker coral on hover */
+}
+    </style>
+</head>
+<body>
+    <!-- Navbar Include -->
+    {% include 'navbar.html' %}
+ 
+    <div class="container">
+        <!-- Profile Section -->
+        <div class="profile-section">
+            {% load static %}
+            <div class="profile-image">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="Profile Image">
+                {% else %}
+                    <img src="{% static 'profile_images/profile.jpg' %}" alt="Default Profile Image">
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <!-- Display the user's username dynamically -->
+                <div class="username">{{ user.username }}</div>
+                <div class="joined">Joined {{ profile.user.date_joined|date:"m/d/Y" }}</div>
+                <div class="bio">
+                    <p>{{ profile.bio }}</p>
+                </div>
+            </div>
+            <!-- Edit Profile Button positioned top right -->
+            <a href="{% url 'edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+        </div>
+ 
+        <!-- Main Layout -->
+        <div class="layout">
+            <!-- Filters -->
+            <div class="filters">
+                <h3>Filters</h3>
+                <ul>
+                    <li><a href="{% url 'HomePage:home' %}">HomePage</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Recipes</a></li>
+                    <li><a href="{% url 'recipe_cuisine' %}">Cuisine</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Reviews</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Tweaks</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Questions</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Following</a></li>
+                    <li><a href="{% url 'recipe_list' %}">Followers</a></li>
+                </ul>
+            </div>
+ 
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <h2>All Activity</h2>
+                <div class="icon">X</div>
+                <!-- Use profile username dynamically in the message -->
+                <div class="no-activity">Uh Oh!<br>Looks like {{ user.username }} has no activity!</div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- Footer Include -->
+    {% include 'footer.html' %}
+</body>
+</html>

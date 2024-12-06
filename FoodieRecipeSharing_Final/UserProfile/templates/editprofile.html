@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+ 
+    <!-- Link to Google Fonts to load Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+ 
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif; /* Updated to use Poppins font */
+            margin: 0;
+            padding: 0;
+            background-color: #f8f6f1;
+            color: #333;
+        }
+ 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+ 
+        /* Main Layout */
+        .layout {
+            display: flex;
+            justify-content: center;  /* Centers the form horizontally */
+            align-items: center;      /* Centers the form vertically */
+            margin-top: 40px;            /* Full viewport height */
+        }
+ 
+        /* Edit Profile Form */
+        .edit-profile {
+            width: 75%;
+            max-width: 600px;         /* Optional: limit the width of the form */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative; /* This makes the back-link position absolute within this container */
+        }
+ 
+        .edit-profile h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+ 
+        .edit-profile form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+ 
+        /* Profile Image Section */
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            background-color: #ccc;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+ 
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+ 
+        /* Form Inputs */
+        .edit-profile form input,
+        .edit-profile form textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 400px; /* Limit width of inputs */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+ 
+        .edit-profile form button {
+            padding: 10px;
+            background-color: #5e0909;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 50%;
+            max-width: 200px; /* Limit button width */
+        }
+ 
+        .edit-profile form button:hover {
+            background-color: #c03535;
+        }
+ 
+        /* Back to Profile Link */
+        .back-link {
+            position: absolute; /* Position the link absolutely within the edit-profile container */
+            top: 10px;  /* Adjust the distance from the top */
+            left: 20px; /* Adjust the distance from the right */
+            font-size: 1rem;
+        }
+ 
+        .back-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+ 
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Include -->
+    {% include 'navbar.html' %}
+ 
+    <div class="container">
+        <!-- Edit Profile Section -->
+        <div class="layout">
+            <div class="edit-profile">
+                <h2>Edit Your Profile</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Profile Image -->
+                    <div class="profile-image">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="Profile Image">
+                        {% else %}
+                            <img src="{% static 'profile_images/.jpg' %}" alt="Default Profile Image">
+                        {% endif %}
+                    </div>
+                
+                    <label for="profile_image">Upload New Profile Picture</label>
+                    <input type="file" id="profile_image" name="profile_image">
+                
+                    <!-- First Name, Last Name, Username, and Bio Inputs -->
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}">
+                
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio">{{ profile.bio }}</textarea>
+                
+                    <button type="submit">Save Changes</button>
+                </form>
+                
+ 
+                <div class="back-link">
+                    <a href="{% url 'profile' %}">Back to Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- Footer Include -->
+    {% include 'footer.html' %}
+</body>
+</html>
