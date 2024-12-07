@@ -11,4 +11,5 @@ urlpatterns = [
     path('bookmark/remove/<int:recipe_id>/', views.remove_bookmark, name='remove_bookmark'),
     path('bookmarks/', views.bookmark_list, name='bookmark_list'),
     path('search/', views.search_recipes, name='recipe_search'),
+    path('<int:pk>/', views.review_detail, name='review_detail'),
 ]

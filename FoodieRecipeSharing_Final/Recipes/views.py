@@ -11,28 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 import json
- 
 
-@csrf_exempt
-def add_review(request, post_id):
-    if request.method == "POST" and request.user.is_authenticated:
-        try:
-            data = json.loads(request.body)
-            recipe = get_object_or_404(RecipePost, id=post_id)
-            review_text = data.get("text", "").strip()
-           
-            if not review_text:
-                return JsonResponse({"success": False, "error": "Review text cannot be empty."}, status=400)
- 
-            review = Review.objects.create(recipe=recipe, user=request.user, text=review_text)
-            return JsonResponse({
-                "success": True,
-                "username": review.user.username,
-                "review": review.text,
-            })
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-    return JsonResponse({"success": False, "error": "Invalid request."}, status=400)
 
 class RecipePostListView(ListView):
     model = RecipePost
@@ -200,3 +179,41 @@ def search_recipes(request):
     }
     
     return render(request, 'recipes/search_recipes.html', context)
+
+@login_required
+@csrf_exempt
+def edit_review(request, review_id):
+    if request.method == "POST":
+        review = get_object_or_404(Review, id=review_id)
+        
+        if review.user != request.user:
+            return JsonResponse({"success": False, "error": "You can only edit your own reviews."}, status=403)
+        
+        data = json.loads(request.body)
+        new_text = data.get("text", "").strip()
+
+        if not new_text:
+            return JsonResponse({"success": False, "error": "Review text cannot be empty."}, status=400)
+
+        review.text = new_text
+        review.save()
+        
+        return JsonResponse({
+            "success": True,
+            "text": review.text,
+            "username": review.user.username,
+        })
+
+# Delete Review
+@login_required
+@csrf_exempt
+def delete_review(request, review_id):
+    if request.method == "POST":
+        review = get_object_or_404(Review, id=review_id)
+        
+        if review.user != request.user:
+            return JsonResponse({"success": False, "error": "You can only delete your own reviews."}, status=403)
+
+        review.delete()
+        return JsonResponse({"success": True, "message": "Review deleted successfully."})
+    
