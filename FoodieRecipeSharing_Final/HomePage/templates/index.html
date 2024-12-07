@@ -7,11 +7,11 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
   {% block css %}{% endblock %}
 </head>
+<header>
+    <!-- Include Navbar -->
+    {% include 'navbar.html' %}
+</header>
 <body>
-
-  <!-- Include Navbar -->
-  {% include 'navbar.html' %}
-
   <!-- Main Content Block -->
   <main>
     <div class="section quick-dinner-recipes">

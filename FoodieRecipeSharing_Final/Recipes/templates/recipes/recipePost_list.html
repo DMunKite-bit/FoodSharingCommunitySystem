@@ -96,12 +96,12 @@
         }
     </style>
 </head>
-<body>
+<header>
     {% include 'navbar.html' %}
-
+</header>
+<body>
     <main>
-        <h1>Filipino Recipes</h1>
-        <a href="{% url 'recipe_create' %}" class="button">Create New Recipe</a>
+        <h1>All Recipes</h1>
 
         <ul>
             {% for post in posts %}
