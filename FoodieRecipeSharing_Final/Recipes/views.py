@@ -11,13 +11,38 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 import json
+ 
 
+@csrf_exempt
+def add_review(request, post_id):
+    if request.method == "POST" and request.user.is_authenticated:
+        try:
+            data = json.loads(request.body)
+            recipe = get_object_or_404(RecipePost, id=post_id)
+            review_text = data.get("text", "").strip()
+           
+            if not review_text:
+                return JsonResponse({"success": False, "error": "Review text cannot be empty."}, status=400)
+ 
+            review = Review.objects.create(recipe=recipe, user=request.user, text=review_text)
+            return JsonResponse({
+                "success": True,
+                "username": review.user.username,
+                "review": review.text,
+            })
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+    return JsonResponse({"success": False, "error": "Invalid request."}, status=400)
 
 class RecipePostListView(ListView):
     model = RecipePost
     template_name = 'recipes/recipePost_list.html'
     context_object_name = 'posts'
     paginate_by = 12
+    
+    def get_queryset(self):
+        return RecipePost.objects.order_by('-created_at')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -80,7 +105,13 @@ def cuisine_view(request):
 
 def recipe_detail(request, pk):
     recipe = get_object_or_404(RecipePost, pk=pk)
-    return render(request, 'recipes/recipe_details.html', {'recipe': recipe})
+    is_bookmarked = False
+    if request.user.is_authenticated:
+        is_bookmarked = Bookmark.objects.filter(user=request.user, recipe=recipe).exists()
+    return render(request, 'recipes/recipe_details.html', {
+        'recipe': recipe, 
+        'is_bookmarked': is_bookmarked
+    })
 
 def recipe_by_category(request, category):
     recipes = RecipePost.objects.filter(category=category)
@@ -120,15 +151,41 @@ def add_review(request, post_id):
  
 @login_required
 def add_bookmark(request, recipe_id):
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        recipe = get_object_or_404(RecipePost, id=recipe_id)
+    recipe = get_object_or_404(RecipePost, id=recipe_id)
+    try:
         bookmark, created = Bookmark.objects.get_or_create(user=request.user, recipe=recipe)
         return JsonResponse({
             'success': True, 
             'message': 'Bookmark added successfully',
-            'bookmark_id': bookmark.id
+            'is_bookmarked': True
         })
-    return redirect('recipe_list')
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'message': str(e)
+        }, status=400)
+
+@login_required
+def remove_bookmark(request, recipe_id):
+    recipe = get_object_or_404(RecipePost, id=recipe_id)
+    try:
+        bookmark = Bookmark.objects.filter(user=request.user, recipe=recipe)
+        if bookmark.exists():
+            bookmark.delete()
+            return JsonResponse({
+                'success': True, 
+                'message': 'Bookmark removed successfully',
+                'is_bookmarked': False
+            })
+        return JsonResponse({
+            'success': False, 
+            'message': 'Bookmark not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'message': str(e)
+        }, status=400)
 
 @login_required
 def bookmark_list(request):
@@ -143,17 +200,6 @@ def bookmark_list(request):
     
     return render(request, 'recipes/bookmark_list.html', context)
  
-@login_required
-def remove_bookmark(request, recipe_id):
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        recipe = get_object_or_404(RecipePost, id=recipe_id)
-        delete_count, _ = Bookmark.objects.filter(user=request.user, recipe=recipe).delete()
-        return JsonResponse({
-            'success': delete_count > 0, 
-            'message': 'Bookmark removed successfully'
-        })
-    return redirect('recipe_list')
-
 def search_recipes(request):
     # Display some initial recipes before search
     initial_recipes = RecipePost.objects.all()[:6]  # First 6 recipes
@@ -179,41 +225,3 @@ def search_recipes(request):
     }
     
     return render(request, 'recipes/search_recipes.html', context)
-
-@login_required
-@csrf_exempt
-def edit_review(request, review_id):
-    if request.method == "POST":
-        review = get_object_or_404(Review, id=review_id)
-        
-        if review.user != request.user:
-            return JsonResponse({"success": False, "error": "You can only edit your own reviews."}, status=403)
-        
-        data = json.loads(request.body)
-        new_text = data.get("text", "").strip()
-
-        if not new_text:
-            return JsonResponse({"success": False, "error": "Review text cannot be empty."}, status=400)
-
-        review.text = new_text
-        review.save()
-        
-        return JsonResponse({
-            "success": True,
-            "text": review.text,
-            "username": review.user.username,
-        })
-
-# Delete Review
-@login_required
-@csrf_exempt
-def delete_review(request, review_id):
-    if request.method == "POST":
-        review = get_object_or_404(Review, id=review_id)
-        
-        if review.user != request.user:
-            return JsonResponse({"success": False, "error": "You can only delete your own reviews."}, status=403)
-
-        review.delete()
-        return JsonResponse({"success": True, "message": "Review deleted successfully."})
-    

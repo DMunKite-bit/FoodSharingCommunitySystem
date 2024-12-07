@@ -1,3 +1,5 @@
+<!-- recipe_details.html-->
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,134 +7,225 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ recipe.title }} | Recipe Details</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+    :root {
+      --primary-color: #4a4a4a;
+      --secondary-color: #f9a825;
+      --background-color: #f8f8f8;
+      --card-background: #ffffff;
+      --text-color: #333333;
+      --border-radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
     header, footer {
-      background-color: #333;
+      background-color: var(--primary-color);
       color: white;
       text-align: center;
-      padding: 10px 0;
+      padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
     .recipe-detail-container {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: var(--card-background);
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+      overflow: hidden;
     }
 
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
+    .recipe-header {
+      position: relative;
+      height: 300px;
+      overflow: hidden;
     }
 
     .recipe-image {
       width: 100%;
-      height: auto;
-      border-radius: 8px;
+      height: 100%;
       object-fit: cover;
     }
 
+    .recipe-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      color: white;
+      padding: 1rem;
+      font-size: 2rem;
+    }
+
+    .recipe-content {
+      padding: 2rem;
+    }
+
     .recipe-metadata {
-      margin-top: 20px;
-      font-size: 1.1em;
-    }
-
-    .recipe-metadata p {
-      margin: 5px 0;
-    }
-
-    .recipe-description, .recipe-ingredients, .recipe-directions {
-      margin-top: 30px;
-    }
-
-    .recipe-description h2, .recipe-ingredients h2, .recipe-directions h2 {
-      font-size: 1.8em;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .recipe-ingredients ul {
-      list-style-type: none;
-      padding-left: 0;
-    }
-
-    .recipe-ingredients li {
-      background: #f4f4f4;
-      margin: 5px 0;
-      padding: 8px;
-      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: #666;
     }
 
     .difficulty-stars {
-      color: #FFD700;
-      font-size: 1.5em;
+      color: var(--secondary-color);
+      font-size: 1.2rem;
     }
 
-    .difficulty-stars span {
-      margin-right: 2px;
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 1.5rem 0 1rem;
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 0.5rem;
     }
 
-    .difficulty-stars span.empty {
-      color: #e0e0e0;
+    .recipe-ingredients ul, .recipe-directions ol {
+      padding-left: 1.5rem;
+    }
+
+    .review-form {
+      margin-top: 2rem;
+    }
+
+    .review-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+    }
+
+    .review-submit {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+
+    .review-list {
+      margin-top: 2rem;
+    }
+
+    .review-item {
+      background-color: #f4f4f4;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-  <!-- Include Navbar -->
   {% include 'navbar.html' %}
 
-  <main>
+  <main class="container">
     <div class="recipe-detail-container">
-      <h1>{{ recipe.title }}</h1>
-      <img class="recipe-image" src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+      <div class="recipe-header">
+        <img class="recipe-image" src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+        <h1 class="recipe-title">{{ recipe.title }}</h1>
+      </div>
 
-      <div class="recipe-metadata">
-        <p><strong>Posted by:</strong> {{ recipe.user }}</p>
-        <p><strong>Difficulty:</strong>
-          <span class="difficulty-stars">
-            {% load custom_filters %}
-            {% for i in recipe.difficulty|range_star %}
-              <span>★</span>
+      <div class="recipe-content">
+        <div class="recipe-metadata">
+          <p><strong>Posted by:</strong> {{ recipe.user }}</p>
+          <p><strong>Difficulty:</strong>
+            <span class="difficulty-stars">
+              {% for i in recipe.difficulty|range_star %} ★ {% endfor %}
+              {% for i in 5|range_star|slice:":recipe.difficulty" %} <span class="empty">★</span> {% endfor %}
+            </span>
+          </p>
+          <p><strong>Category:</strong> {{ recipe.category }}</p>
+          <p><strong>Created At:</strong> {{ recipe.created_at|date:"F j, Y" }}</p>
+        </div>
+
+        <div class="recipe-description">
+          <h2 class="section-title">Description</h2>
+          <p>{{ recipe.description }}</p>
+        </div>
+
+        <div class="recipe-ingredients">
+          <h2 class="section-title">Ingredients</h2>
+          <ul>
+            {% for ingredient in recipe.ingredients.splitlines %}<li>{{ ingredient }}</li>{% endfor %}
+          </ul>
+        </div>
+
+        <div class="recipe-directions">
+          <h2 class="section-title">Directions</h2>
+          <ol>
+            {% for direction in recipe.directions.splitlines %}<li>{{ direction }}</li>{% endfor %}
+          </ol>
+        </div>
+
+        <div class="recipe-reviews">
+          <h2 class="section-title">Reviews</h2>
+          <div class="review-list">
+            {% for review in reviews %}
+              <div class="review-item"><strong>{{ review.user.username }}:</strong> {{ review.text }}</div>
             {% endfor %}
-            {% for i in 5|range_star|slice:":recipe.difficulty" %}
-              <span class="empty">★</span>
-            {% endfor %}
-          </span>
-        </p>
-        <p><strong>Category:</strong> {{ recipe.category }}</p>
-        <p><strong>Created At:</strong> {{ recipe.created_at|date:"F j, Y" }}</p>
-      </div>
+          </div>
 
-      <div class="recipe-description">
-        <h2>Description</h2>
-        <p>{{ recipe.description }}</p>
-      </div>
-
-      <div class="recipe-ingredients">
-        <h2>Ingredients</h2>
-        <ul>
-          {% for ingredient in recipe.ingredients.splitlines %}
-            <li>{{ ingredient }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="recipe-directions">
-        <h2>Directions</h2>
-        <p>{{ recipe.directions }}</p>
+          <form class="review-form" onsubmit="addReview(event)">
+            <textarea id="reviewInput" class="review-input" placeholder="Write your review here..." required></textarea>
+            <button type="submit" class="review-submit">Submit Review</button>
+          </form>
+        </div>
       </div>
     </div>
   </main>
 
-  <!-- Include Footer -->
   {% include 'footer.html' %}
+
+  <script>
+    const recipeId = {{ recipe.id }};
+
+    function addReview(event) {
+      event.preventDefault();
+      const reviewText = document.getElementById('reviewInput').value;
+
+      fetch(`/add_review/${recipeId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ text: reviewText })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const reviewList = document.querySelector('.review-list');
+          const newReview = document.createElement('div');
+          newReview.className = 'review-item';
+          newReview.innerHTML = `<strong>${data.username}:</strong> ${reviewText}`;
+          reviewList.appendChild(newReview);
+          document.getElementById('reviewInput').value = '';
+        } else {
+          alert('Failed to submit review');
+        }
+      });
+    }
+  </script>
 </body>
 </html>

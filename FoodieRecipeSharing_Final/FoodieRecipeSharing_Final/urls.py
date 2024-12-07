@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from LogIn.views import signup_view, login_view, logout_view
-from Recipes.views import add_review, recipe_by_category, edit_review, delete_review
+from Recipes.views import add_review, recipe_by_category
 from UserProfile.views import profile, edit_profile
 from popular.views import popular
 

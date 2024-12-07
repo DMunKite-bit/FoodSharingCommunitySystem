@@ -186,12 +186,7 @@ body {
                 <ul>
                     <li><a href="{% url 'HomePage:home' %}">HomePage</a></li>
                     <li><a href="{% url 'recipe_list' %}">Recipes</a></li>
-                    <li><a href="{% url 'recipe_cuisine' %}">Cuisine</a></li>
                     <li><a href="{% url 'recipe_list' %}">Reviews</a></li>
-                    <li><a href="{% url 'recipe_list' %}">Tweaks</a></li>
-                    <li><a href="{% url 'recipe_list' %}">Questions</a></li>
-                    <li><a href="{% url 'recipe_list' %}">Following</a></li>
-                    <li><a href="{% url 'recipe_list' %}">Followers</a></li>
                 </ul>
             </div>
  
@@ -204,8 +199,8 @@ body {
             </div>
         </div>
     </div>
- 
-    <!-- Footer Include -->
-    {% include 'footer.html' %}
 </body>
+<footer>
+{% include 'footer.html' %}
+</footer>
 </html>

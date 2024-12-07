@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!-- recipePost_list.html -->
+{% load custom_filters %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -43,6 +44,8 @@
             overflow: hidden;
             transition: transform 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
 
         .recipe-card:hover {
@@ -57,6 +60,9 @@
 
         .recipe-card-content {
             padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .recipe-card-title {
@@ -66,9 +72,23 @@
             margin-bottom: 10px;
         }
 
+        .difficulty-stars {
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .difficulty-stars span {
+            margin-right: 2px;
+        }
+
+        .difficulty-stars span.empty {
+            color: #e0e0e0;
+        }
+
         .recipe-card-description {
             color: var(--secondary-color);
             font-size: 0.9rem;
+            flex-grow: 1;
         }
 
         /* Modal Styles */
@@ -191,12 +211,20 @@
         
         <div class="recipe-grid">
             {% for post in posts %}
-            <div class="recipe-card" onclick="openRecipeModal({{ post.id }})">
+            <div class="recipe-card" data-recipe-id="{{ post.id }}">
                 {% if post.image %}
                     <img src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
                 <div class="recipe-card-content">
                     <h2 class="recipe-card-title">{{ post.title }}</h2>
+                    <div class="difficulty-stars">
+                        {% for i in post.difficulty|make_list %}
+                            <span>★</span>
+                        {% endfor %}
+                        {% for i in 5|make_list|slice:":{{ 5|minus:post.difficulty }}" %}
+                            <span class="empty">☆</span>
+                        {% endfor %}
+                    </div>
                     <p class="recipe-card-description">{{ post.description|truncatechars:100 }}</p>
                 </div>
             </div>
@@ -225,6 +253,26 @@
     </footer>
 
     <script>
+        const csrf_Token = '{{csfr_token}}'
+         document.addEventListener('DOMContentLoaded', () => {
+            const recipeCards = document.querySelectorAll('.recipe-card');
+            
+            recipeCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const recipeId = card.getAttribute('data-recipe-id');
+                    openRecipeModal(parseInt(recipeId));
+                });
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.matches('.bookmark-btn')) {
+                const button = event.target;
+                const recipeId = button.getAttribute('data-recipe-id');
+                toggleBookmark(recipeId, button);
+            }
+        });
+
         const recipes = [
             {% for post in posts %}
             {
@@ -310,7 +358,7 @@
                         </div>
 
                         <div style="margin-top: 15px;">
-                            <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id})">
+                            <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id}, this)" data-recipe-id="${recipe.id}">
                                 ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
                             </button>
                         </div>
@@ -396,11 +444,10 @@
             document.getElementById('reviewInput').value = '';
         }
 
-        function toggleBookmark(recipeId) {
-            const bookmarkBtn = document.querySelector('.bookmark-btn');
-            const isCurrentlyBookmarked = bookmarkBtn.textContent === 'Unbookmark';
+        function toggleBookmark(recipeId, button) {
+            const isCurrentlyBookmarked = button.textContent.trim() === 'Unbookmark';
             
-            fetch(isCurrentlyBookmarked ? `/remove_bookmark/${recipeId}/` : `/add_bookmark/${recipeId}/`, {
+            fetch(isCurrentlyBookmarked ? `/bookmark/remove/${recipeId}/` : `/bookmark/add/${recipeId}/`, {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -410,7 +457,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    bookmarkBtn.textContent = isCurrentlyBookmarked ? 'Bookmark' : 'Unbookmark';
+                    button.textContent = data.is_bookmarked ? 'Unbookmark' : 'Bookmark';
                 } else {
                     alert(data.message || 'Failed to update bookmark');
                 }
