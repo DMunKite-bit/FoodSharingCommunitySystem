@@ -313,15 +313,12 @@ nav img:hover {
       </div>
       <div>
         <a href="{% url 'recipe_list' %}">RECIPES</a>
-        <a href="{% url 'popular' %}">POPULAR</a>
-        <a href="{% url 'recipe_cuisine' %}">CUISINE</a>
+        <a href="{% url 'recipe_cuisine' %}">CATEGORY</a>
+        <a href="{% url 'bookmark_list' %}">BOOKMARKS</a>
       </div>
       <div>
         <a href="{% url 'recipe_search' %}">
           <img src="{% static 'images/Search.png' %}" alt="Search">
-        </a>
-        <a href="{% url 'bookmark_list' %}">
-          <img src="{% static 'images/Bookmark.png' %}" alt="Bookmark">
         </a>
         <div class="profile-dropdown">
           <a href="#">
