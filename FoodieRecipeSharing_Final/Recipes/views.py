@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.paginator import Paginator
 import json
  
 
@@ -37,6 +38,7 @@ class RecipePostListView(ListView):
     model = RecipePost
     template_name = 'recipes/recipePost_list.html'
     context_object_name = 'posts'
+    paginate_by = 12
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -136,23 +138,42 @@ def add_review(request, post_id):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
     return JsonResponse({"success": False, "error": "Invalid request."}, status=400)
-
+ 
 @login_required
 def add_bookmark(request, recipe_id):
-    recipe = get_object_or_404(RecipePost, id=recipe_id)
-    Bookmark.objects.get_or_create(user=request.user, recipe=recipe)
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        recipe = get_object_or_404(RecipePost, id=recipe_id)
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, recipe=recipe)
+        return JsonResponse({
+            'success': True, 
+            'message': 'Bookmark added successfully',
+            'bookmark_id': bookmark.id
+        })
     return redirect('recipe_list')
+
+@login_required
+def bookmark_list(request):
+    """
+    View to display a list of bookmarked recipes for the logged-in user
+    """
+    bookmarks = Bookmark.objects.filter(user=request.user)
+    
+    context = {
+        'bookmarks': bookmarks,
+    }
+    
+    return render(request, 'recipes/bookmark_list.html', context)
  
 @login_required
 def remove_bookmark(request, recipe_id):
-    recipe = get_object_or_404(RecipePost, id=recipe_id)
-    Bookmark.objects.filter(user=request.user, recipe=recipe).delete()
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        recipe = get_object_or_404(RecipePost, id=recipe_id)
+        delete_count, _ = Bookmark.objects.filter(user=request.user, recipe=recipe).delete()
+        return JsonResponse({
+            'success': delete_count > 0, 
+            'message': 'Bookmark removed successfully'
+        })
     return redirect('recipe_list')
- 
-@login_required
-def bookmark_list(request):
-    bookmarks = Bookmark.objects.filter(user=request.user).select_related('recipe')
-    return render(request, 'recipes/bookmarks_list.html', {'bookmarks': bookmarks})
 
 def search_recipes(request):
     # Display some initial recipes before search

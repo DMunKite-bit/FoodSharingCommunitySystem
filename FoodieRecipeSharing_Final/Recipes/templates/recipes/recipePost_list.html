@@ -1,4 +1,3 @@
-<!-- Updated Recipe List HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,166 +5,219 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe List</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        /* Original styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 10px auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f4f4f4;
+            --card-background: #ffffff;
+            --text-color: #333;
         }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        ul {
-            list-style-type: none;
+
+        * {
+            margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        li {
-            padding: 50px;
-            margin: 40px 0;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            line-height: 1.6;
         }
-        img {
-            width: 350px;
-            height: auto;
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
             margin: 0 auto;
-            display: block;
-            border-radius: 8px;
         }
-        .recipe-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin: 20px 0 10px;
-            color: #333;
+
+        .recipe-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
         }
-        .recipe-details {
-            font-size: 1em;
-            color: #555;
-            margin: 10px 0;
-            text-align: center;
+
+        .recipe-card:hover {
+            transform: scale(1.05);
         }
-        .ingredients,
-        .directions {
-            text-align: justify;
-            margin: 10px auto;
-            padding: 10px;
-            border-radius: 4px;
+
+        .recipe-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
         }
-        .btn {
-            display: inline-block;
-            margin: 10px 5px;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
+
+        .recipe-card-content {
+            padding: 15px;
         }
-        .btn-primary {
-            background-color: #007bff;
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: #fff;
-        }
-        .btn-danger:hover {
-            background-color: #a71d2a;
-        }
-        .review-list {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-        }
-        .review-item {
+
+        .recipe-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
             margin-bottom: 10px;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
         }
-        .bookmark-section {
-            margin-top: 10px;
+
+        .recipe-card-description {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .recipe-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .recipe-modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .modal-navigation {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .modal-prev {
+            left: 20px;
+        }
+
+        .modal-next {
+            right: 20px;
+        }
+
+        /* Review Styles */
+        .reviews-section {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .review-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .review-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .review-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .bookmark-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .bookmark-btn:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
-<header>
-    {% include 'navbar.html' %}
-</header>
 <body>
+    <header>
+        {% include 'navbar.html' %}
+    </header>
+
     <main>
-        <h1>All Recipes</h1>
-
-        <ul>
+        <h1 style="text-align: center; margin: 20px 0;">All Recipes</h1>
+        
+        <div class="recipe-grid">
             {% for post in posts %}
-                <li>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
-                    {% endif %}
-                    <p class="recipe-title">{{ post.title }}</p>
-                    <p class="recipe-details"><strong>Posted by:</strong> {{ post.user.username }}</p>
-                    <p class="recipe-details"><strong>DIFFICULTY:</strong> {{ post.difficulty }}</p>
-                    <p class="recipe-details">{{ post.description }}</p>
-                    <div class="ingredients">
-                        <strong>Ingredients:</strong>
-                        <p>{{ post.ingredients }}</p>
-                    </div>
-                    <div class="directions">
-                        <strong>Directions:</strong>
-                        <p>{{ post.directions }}</p>
-                    </div>
-
-                    <!-- Show Edit and Delete buttons only if the logged-in user is the creator -->
-                    {% if post.user == request.user %}
-                        <a href="{% url 'recipe_edit' post.pk %}" class="btn btn-primary">Edit</a>
-                        <a href="{% url 'recipe_delete' post.pk %}" class="btn btn-danger">Delete</a>
-                    {% endif %}
-
-                    <!-- Reviews Section -->
-                    <div id="reviews-{{ post.id }}" class="review-list">
-                        <strong>Reviews:</strong>
-                        <ul>
-                            {% for review in post.reviews.all %}
-                                <li class="review-item">
-                                    <strong>{{ review.user.username }}:</strong> {{ review.text }}
-                                </li>
-                            {% empty %}
-                                <li>No reviews yet.</li>
-                            {% endfor %}
-                        </ul>
-                        <button class="btn btn-primary" onclick="toggleReviewForm({{ post.id }})">Add a Review</button>
-                        <div id="review-form-{{ post.id }}" style="display: none; margin-top: 10px;">
-                            <textarea id="review-input-{{ post.id }}" rows="3" placeholder="Write your review..."></textarea>
-                            <button class="btn btn-primary" onclick="submitReview({{ post.id }})">Submit</button>
-                        </div>
-                    </div>
-
-                    <!-- Bookmark Section -->
-                    <div class="bookmark-section">
-                        {% if post.id in bookmarked_recipes %}
-                            <form method="post" action="{% url 'remove_bookmark' post.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Unbookmark</button>
-                            </form>
-                        {% else %}
-                            <form method="post" action="{% url 'add_bookmark' post.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">Bookmark</button>
-                            </form>
-                        {% endif %}
-                    </div>
-                </li>
+            <div class="recipe-card" onclick="openRecipeModal({{ post.id }})">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                {% endif %}
+                <div class="recipe-card-content">
+                    <h2 class="recipe-card-title">{{ post.title }}</h2>
+                    <p class="recipe-card-description">{{ post.description|truncatechars:100 }}</p>
+                </div>
+            </div>
             {% empty %}
-                <li>No recipes available.</li>
+                <p>No recipes available.</p>
             {% endfor %}
-        </ul>
+        </div>
+
+        <!-- Recipe Modal -->
+        <div id="recipeModal" class="recipe-modal">
+            <div class="recipe-modal-content">
+                <span class="modal-close" onclick="closeRecipeModal()">&times;</span>
+                <div id="modalNavPrev" class="modal-navigation modal-prev" onclick="navigateRecipe(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div id="modalNavNext" class="modal-navigation modal-next" onclick="navigateRecipe(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div id="recipeModalContent"></div>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -173,46 +225,208 @@
     </footer>
 
     <script>
-        function toggleReviewForm(postId) {
-            const form = document.getElementById(`review-form-${postId}`);
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
+        const recipes = [
+            {% for post in posts %}
+            {
+                id: {{ post.id }},
+                title: "{{ post.title|escapejs }}",
+                image: "{{ post.image.url|default:'' }}",
+                user: "{{ post.user.username|default:'Unknown' }}",
+                difficulty: {{ post.difficulty }},
+                description: "{{ post.description|escapejs }}",
+                ingredients: "{{ post.ingredients|escapejs }}",
+                directions: "{{ post.directions|escapejs }}",
+                reviews: [
+                    {% for review in post.reviews.all %}
+                    {
+                        user: "{{ review.user.username }}",
+                        text: "{{ review.text|escapejs }}",
+                        createdAt: "{{ review.created_at }}"
+                    }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                isBookmarked: {% if post.id in bookmarked_recipes %}true{% else %}false{% endif %}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
 
-        function submitReview(postId) {
-            const reviewText = document.getElementById(`review-input-${postId}`).value.trim();
-            if (!reviewText) {
-                alert("Review cannot be empty.");
+        let currentRecipeIndex=0;
+
+        function openRecipeModal(recipeId) {
+            console.log("Opening recipe modal for ID:", recipeId);
+            console.log("Available recipes:", recipes);
+
+            // Debug: find the recipe
+            const recipe = recipes.find(r => r.id === recipeId);
+            
+            if (!recipe) {
+                console.error("Recipe not found for ID:", recipeId);
                 return;
             }
 
-            fetch(`/add_review/${postId}/`, {
+            console.log("Found recipe:", recipe);
+
+            // Construct modal content with more robust error handling
+            const modalContent = `
+                <div class="recipe-modal-details" data-recipe-id="${recipe.id}">
+                    <h1>${escapeHtml(recipe.title)}</h1>
+                    
+                    ${recipe.image ? `<img src="${recipe.image}" style="width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 20px;">` : ''}
+                    
+                    <div class="recipe-section">
+                        <h3>Description</h3>
+                        <p>${escapeHtml(recipe.description || 'No description available')}</p>
+                    </div>
+                    
+                    <div class="recipe-section">
+                        <h3>Ingredients</h3>
+                        <p>${escapeHtml(recipe.ingredients || 'No ingredients listed')}</p>
+                    </div>
+                    
+                    <div class="recipe-section">
+                        <h3>Directions</h3>
+                        <p>${escapeHtml(recipe.directions || 'No directions provided')}</p>
+                    </div>
+
+                    <div class="reviews-section">
+                        <h3>Reviews</h3>
+                        <div class="review-list">
+                            ${recipe.reviews.length > 0 
+                                ? recipe.reviews.map(review => `
+                                    <div class="review-item">
+                                        <strong>${escapeHtml(review.user)}:</strong> 
+                                        ${escapeHtml(review.text)}
+                                    </div>
+                                `).join('') 
+                                : '<p>No reviews yet</p>'}
+                        </div>
+                        
+                        <div class="review-form">
+                            <textarea class="review-input" id="reviewInput" placeholder="Write a review..."></textarea>
+                            <div class="review-buttons">
+                                <button onclick="submitReview(${recipe.id})">Submit</button>
+                                <button onclick="cancelReview()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id})">
+                                ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Escape HTML to prevent XSS
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            // Set the modal content
+            const modalContentElement = document.getElementById('recipeModalContent');
+            if (modalContentElement) {
+                modalContentElement.innerHTML = modalContent;
+                document.getElementById('recipeModal').style.display = 'flex';
+            } else {
+                console.error("Modal content element not found");
+            }
+        }
+
+        function closeRecipeModal() {
+            document.getElementById('recipeModal').style.display = 'none';
+        }
+
+        function navigateRecipe(direction) {
+            const currentRecipeId = parseInt(document.querySelector('#recipeModalContent [data-recipe-id]').getAttribute('data-recipe-id'));
+            currentRecipeIndex = recipes.findIndex(r => r.id === currentRecipeId);
+
+            // Navigate to the next or previous recipe
+            currentRecipeIndex += direction;
+            
+            // Wrap around if at the beginning or end
+            if (currentRecipeIndex < 0) {
+                currentRecipeIndex = recipes.length - 1;
+            } else if (currentRecipeIndex >= recipes.length) {
+                currentRecipeIndex = 0;
+            }
+
+            const recipe = recipes[currentRecipeIndex];
+            openRecipeModal(recipe.id);
+        }
+
+        function submitReview(recipeId) {
+            const reviewText = document.getElementById('reviewInput').value.trim();
+            if (!reviewText) {
+                alert('Review cannot be empty');
+                return;
+            }
+
+            // Django AJAX review submission logic here
+            fetch(`/add_review/${recipeId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ text: reviewText }),
+                body: JSON.stringify({ text: reviewText })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to submit review. Please try again.");
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const reviewsDiv = document.getElementById(`reviews-${postId}`);
-                    reviewsDiv.querySelector('ul').innerHTML += `
-                        <li class="review-item">
-                            <strong>${data.username}:</strong> ${data.review}
-                        </li>`;
-                    document.getElementById(`review-input-${postId}`).value = '';
+                    // Update reviews dynamically
+                    const reviewList = document.querySelector('.review-list');
+                    const newReview = document.createElement('div');
+                    newReview.className = 'review-item';
+                    newReview.innerHTML = `<strong>${data.username}:</strong> ${reviewText}`;
+                    reviewList.appendChild(newReview);
+                    document.getElementById('reviewInput').value = '';
                 } else {
-                    alert(data.error || 'Error submitting review.');
+                    alert('Failed to submit review');
+                }
+            });
+        }
+
+        function cancelReview() {
+            document.getElementById('reviewInput').value = '';
+        }
+
+        function toggleBookmark(recipeId) {
+            const bookmarkBtn = document.querySelector('.bookmark-btn');
+            const isCurrentlyBookmarked = bookmarkBtn.textContent === 'Unbookmark';
+            
+            fetch(isCurrentlyBookmarked ? `/remove_bookmark/${recipeId}/` : `/add_bookmark/${recipeId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
                 }
             })
-            .catch(error => alert(error.message));
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    bookmarkBtn.textContent = isCurrentlyBookmarked ? 'Bookmark' : 'Unbookmark';
+                } else {
+                    alert(data.message || 'Failed to update bookmark');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update bookmark');
+            });
         }
+
+        // Close modal if clicked outside
+        document.getElementById('recipeModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeRecipeModal();
+            }
+        });
     </script>
 </body>
 </html>

@@ -49,6 +49,8 @@ class RecipePost(models.Model):
 
     def __str__(self):
         return self.title  # String representation of the model
+    def difficulty_stars(self):
+        return '★' * self.difficulty + '☆' * (5 - self.difficulty)
     
 class Review(models.Model):
     recipe = models.ForeignKey(RecipePost, related_name='reviews', on_delete=models.CASCADE)
