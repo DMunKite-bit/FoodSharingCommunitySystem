@@ -220,7 +220,7 @@
           newReview.className = 'review-item';
           newReview.innerHTML = `<strong>${data.username}:</strong> ${reviewText}`;
           reviewList.appendChild(newReview);
-          document.getElementById('reviewInput').value = '';
+          document.getElementById('reviewInput').value = '';  
         } else {
           alert('Failed to submit review');
         }

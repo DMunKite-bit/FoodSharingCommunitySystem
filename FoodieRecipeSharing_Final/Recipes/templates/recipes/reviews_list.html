@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Customer Reviews</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --hover-color: #f9fafb;
+            --border-color: #ecf0f1;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px var(--shadow-color);
+        }
+
+        .review-list {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px var(--shadow-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .review-list:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .review-item {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-item:hover {
+            background-color: var(--hover-color);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .review-title {
+            font-size: 1.4em;
+            color: #000;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .review-author {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .review-item:hover .review-author {
+            transform: translateX(5px);
+        }
+
+        .review-text {
+            color: var(--text-color);
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .review-item:hover .review-text {
+            color: #000;
+        }
+
+        /* Adjusted Footer for Date on the Left */
+        .review-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 10px; /* Added margin for spacing */
+        }
+
+        .review-date {
+            font-style: italic;
+            margin-top: 5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .review-item:hover .review-date {
+            opacity: 0.7;
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 1.2em;
+            padding: 40px 20px;
+            font-weight: 500;
+        }
+
+        /* Back Button Style */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            h1 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .review-author {
+                margin-top: 5px;
+            }
+        }
+
+        /* Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .review-item:hover {
+            background-color: #f9f9f9;
+            transform: scale(1.02);
+        }
+
+    </style>
+</head>
+<body>
+    <a href="{% url 'profile' %}" class="back-button">Back to Profile</a> <!-- Back Button -->
+    <div class="container">
+        <h1>Reviews</h1>
+        <div class="review-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <article class="review-item">
+                        <header class="review-header">
+                            <h2 class="review-title">{{ review.recipe.title }}</h2>
+                            <span class="review-author">{{ review.user.username }}</span>
+                        </header>
+                        <p class="review-text">{{ review.text }}</p>
+                        <footer class="review-footer">
+                            <time class="review-date" datetime="{{ review.created_at|date:'Y-m-d' }}">
+                                Reviewed on {{ review.created_at|date:"F d, Y" }}
+                            </time>
+                        </footer>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p class="no-reviews">No reviews found. Be the first to share your thoughts!</p>
+            {% endif %} 
+        </div>
+    </div>
+</body>
+</html>

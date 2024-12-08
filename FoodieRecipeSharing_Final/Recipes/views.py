@@ -13,6 +13,37 @@ from django.core.paginator import Paginator
 import json
  
 
+def reviews_list(request):
+    reviews = Review.objects.all()
+    return render(request, 'recipes/reviews_list.html', {'reviews': reviews})
+
+def recipe_detail(request, pk):
+    recipe = get_object_or_404(RecipePost, pk=pk)
+    reviews = recipe.reviews.all()  # Fetch related reviews
+    return render(request, 'recipe_details.html', {
+        'recipe': recipe,
+        'reviews': reviews,
+    })
+
+@login_required
+def user_profile(request):
+    user = request.user
+    profile = user.userprofile  # Assuming a one-to-one UserProfile model
+    
+    # Fetch the recipes created by the logged-in user
+    recipes = RecipePost.objects.filter(user=user).order_by('-created_at')
+    
+    # Fetch the reviews written by the logged-in user
+    reviews = Review.objects.filter(user=user).select_related('recipe').order_by('-created_at')
+    
+    return render(request, 'profile.html', {
+        'user': user,
+        'profile': profile,
+        'recipes': recipes,
+        'reviews': reviews,
+    })
+
+
 @csrf_exempt
 def add_review(request, post_id):
     if request.method == "POST" and request.user.is_authenticated:
