@@ -14,67 +14,129 @@
       line-height: 1.6;
     }
 
-    /* Header Styling */
-    header {
-  background-color: #5e0909;
-  padding: 10px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
+    /* Navbar-specific CSS */
+    .foodie-navbar {
+      background-color: #5e0909;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: auto;
-}
+    .foodie-navbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: auto;
+    }
 
-nav a {
-  color: #fff;
-  text-decoration: none;
-  margin: 0 15px;
-  font-size: 1rem;
-  font-weight: bold;
-  transition: color 0.3s, transform 0.3s;
-}
+    .foodie-navbar-logo a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
 
-nav a:hover {
-  color: #ffcc00;
-  transform: scale(1.1);
-}
+    .foodie-navbar-logo a:hover {
+      color: #ffcc00;
+    }
 
-nav div {
-  display: flex;
-  align-items: center;
-}
+    .foodie-navbar-links {
+      display: flex;
+      align-items: center;
+    }
 
-nav img {
-  height: 24px;
-  width: 24px;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: transform 0.3s, filter 0.3s;
-}
+    .foodie-navbar-links a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: color 0.3s, transform 0.3s;
+    }
 
-nav img:hover {
-  transform: scale(1.2);
-  filter: brightness(1.2);
-}
+    .foodie-navbar-links a:hover {
+      color: #ffcc00;
+      transform: scale(1.1);
+    }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    text-align: center;
-  }
+    .foodie-navbar-icons {
+      display: flex;
+      align-items: center;
+    }
 
-  nav a {
-    margin: 10px 0;
-  }
-}
+    .foodie-navbar-icons img {
+      height: 24px;
+      width: 24px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: transform 0.3s, filter 0.3s;
+    }
+
+    .foodie-navbar-icons img:hover {
+      transform: scale(1.2);
+      filter: brightness(1.2);
+    }
+
+    /* Profile Dropdown Specific Styling */
+    .foodie-navbar-profile-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .foodie-navbar-profile-dropdown img {
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    
+    .foodie-navbar-profile-dropdown:hover img {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+    
+    .foodie-navbar-dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #ffffff;
+      min-width: 150px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .foodie-navbar-dropdown-content a {
+      color: #330000;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .foodie-navbar-dropdown-content a:hover {
+      background-color: #330000;
+      color: #fff;
+    }
+    
+    .foodie-navbar-profile-dropdown:hover .foodie-navbar-dropdown-content {
+      display: block;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .foodie-navbar-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .foodie-navbar-links a {
+        margin: 10px 0;
+      }
+    }
 
     /* Main Content Styling */
     main {
@@ -124,8 +186,8 @@ nav img:hover {
     }
 
     .recipe-container img {
-      width: 100%;
-      height: 100%;
+      width: 250px !important;
+      height: 200px !important;
       object-fit: cover;
     }
 
@@ -256,81 +318,34 @@ nav img:hover {
       background-color: #330000;
       color: #fff;
     }
-
-    /* Profile Dropdown Styling */
-    .profile-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-     
-    .profile-dropdown img {
-      cursor: pointer;
-      transition: transform 0.3s ease, filter 0.3s ease;
-    }
-     
-    .profile-dropdown:hover img {
-      transform: scale(1.1);
-      filter: brightness(1.2);
-    }
-     
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: #ffffff;
-      min-width: 150px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-     
-    .dropdown-content a {
-      color: #330000;
-      padding: 10px 20px;
-      text-decoration: none;
-      display: block;
-      transition: background-color 0.3s, color 0.3s;
-    }
-     
-    .dropdown-content a:hover {
-      background-color: #330000;
-      color: #fff;
-    }
-     
-    .profile-dropdown:hover .dropdown-content {
-      display: block;
-    }
-
   </style>
 </head>
 <body>
 
-  <header>
-    <nav>
-      <div>
+  <header class="foodie-navbar">
+    <nav class="foodie-navbar-container">
+      <div class="foodie-navbar-logo">
         <a href="{% url 'HomePage:home' %}">FOODIE</a>
       </div>
-      <div>
+      <div class="foodie-navbar-links">
         <a href="{% url 'recipe_list' %}">RECIPES</a>
         <a href="{% url 'recipe_cuisine' %}">CATEGORY</a>
         <a href="{% url 'bookmark_list' %}">BOOKMARKS</a>
         <a href="{% url 'recipe_create' %}">ADD RECIPE</a>
       </div>
-      <div>
+      <div class="foodie-navbar-icons">
         <a href="{% url 'recipe_search' %}">
           <img src="{% static 'images/Search.png' %}" alt="Search">
         </a>
-        <div class="profile-dropdown">
+        <div class="foodie-navbar-profile-dropdown">
           <a href="#">
             <img src="{% static 'images/Account.png' %}" alt="Account">
           </a>
-          <div class="dropdown-content">
+          <div class="foodie-navbar-dropdown-content">
             <a href="{% url 'profile' %}">Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
           </div>
-        </a>
-      </div>
+        </div>
       </div>
     </nav>
   </header>

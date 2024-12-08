@@ -2,11 +2,6 @@
   <!-- HomePage/index.html -->
 <!DOCTYPE html>
 <html>
-<head>
-  <title>{% block title %}Foodie{% endblock %}</title>
-  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-  {% block css %}{% endblock %}
-</head>
 <header>
     <!-- Include Navbar -->
     {% include 'navbar.html' %}
@@ -57,8 +52,8 @@
         </a>
       </div>
     </div>
-    {% include 'footer.html' %}
   </main>
   </body>
+  {% include 'footer.html' %}
   </html>
   
