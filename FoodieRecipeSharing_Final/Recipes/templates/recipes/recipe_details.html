@@ -172,6 +172,26 @@
           </ol>
         </div>
 
+      <div>
+        <!-- Bookmark Button -->
+          {% if user.is_authenticated %}
+          <form id="bookmarkForm" method="POST" style="display: inline;">
+            {% csrf_token %}
+            {% if is_bookmarked %}
+              <button type="submit" id="removeBookmark" class="btn btn-danger">Unbookmark</button>
+            {% else %}
+              <button type="submit" id="addBookmark" class="btn btn-primary">Bookmark</button>
+            {% endif %}
+          </form>
+        {% endif %}
+
+        <!-- Edit & Delete Buttons -->
+        {% if user.is_authenticated and user == recipe.user %}
+          <a href="{% url 'recipe_edit' recipe.id %}" class="btn btn-warning">Edit</a>
+          <a href="{% url 'recipe_delete' recipe.id %}" class="btn btn-danger">Delete</a>
+        {% endif %}
+      </div>
+
         <div class="recipe-reviews">
           <h2 class="section-title">Reviews</h2>
           <div class="review-list">
