@@ -7,111 +7,93 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f3f3f3;
             margin: 0;
             padding: 0;
         }
+
         .container {
-            max-width: 800px;
-            margin: 50px auto;
+            max-width: 700px;
+            margin: 40px auto;
             background-color: #fff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
-            text-align: left;
+            font-size: 1.8rem;
+            color: #333;
             margin-bottom: 20px;
+            text-align: center;
         }
+
         form {
-            display: grid;
+            display: flex;
+            flex-direction: column;
             gap: 15px;
         }
+
         label {
             font-weight: bold;
+            margin-bottom: 5px;
         }
+
         input[type="text"], textarea, select, input[type="file"], input[type="number"] {
-            width: 95%;
+            width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
         }
+
         textarea {
-            resize: none; /* Prevent resizing */
+            height: 100px;
+            resize: vertical;
         }
+
         button {
             background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
+            color: #fff;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 1em;
+            transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #218838;
         }
+
         .back-link {
-            display: inline-block;
-            margin-top: 20px;
+            display: block;
+            margin-top: 15px;
+            text-align: center;
             color: #007bff;
             text-decoration: none;
+            font-size: 0.9rem;
         }
+
         .back-link:hover {
             text-decoration: underline;
-        }
-        hr {
-            border: 0;
-            border-top: 1px solid #ddd;
-            margin: 10px 0;
-        }
-        p {
-            margin-top: 5px;
-            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
+    <header>
+        {% include 'navbar.html' %}
+    </header>
+    
     <div class="container">
-        <h1>ADD A RECIPE</h1>
+        <h1>Create a New Recipe</h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            <!-- Recipe Name -->
-            <input type="text" name="title" placeholder="Recipe Name">
-            
-            <!-- Description -->
-            <input type="text" name="description" placeholder="Description">
-            
-            <!-- Categories -->
-            <label for="category">CATEGORIES</label>
-            {{ form.category }}
-
-            <!-- Difficulty -->
-            <label for="difficulty">DIFFICULTY</label>
-            <input type="number" name="difficulty" id="difficulty" min="1" max="5" placeholder="Choose difficulty (1-5)">
-
-            <!-- Add Image -->
-            <label for="image">ADD IMAGE</label>
-            {{ form.image }}
-
-            <!-- Ingredients -->
-            <label for="ingredients">INGREDIENTS</label>
-            <hr>
-            <p>Enter your ingredients one at a time or paste them into the box below.</p>
-            {{ form.ingredients }}
-
-            <!-- Directions -->
-            <label for="directions">DIRECTIONS</label>
-            <hr>
-            <p>Enter your directions one at a time or paste them into the box below.</p>
-            {{ form.directions }}
-
-            <p>When you click Save, additional changes cannot be made until your recipe is published.</p>
-            <p>By clicking Save, you agree to our terms of service.</p>
-            <button type="submit">Save</button>
+            {{ form.as_p }}
+            <button type="submit">Save Recipe</button>
         </form>
-        <a href="{% url 'recipe_list' %}" class="back-link">Go to Recipe List</a>
+        <a href="{% url 'recipe_list' %}" class="back-link">Go Back to Recipes</a>
     </div>
 </body>
 </html>
