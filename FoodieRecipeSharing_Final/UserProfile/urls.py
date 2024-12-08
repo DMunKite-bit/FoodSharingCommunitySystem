@@ -7,6 +7,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('recipe/<int:pk>/', views.recipe_detail, name='recipe_detail'),
+    path('user_recipes/', views.user_recipes, name='user_recipes'),
 ]
 
 if settings.DEBUG:

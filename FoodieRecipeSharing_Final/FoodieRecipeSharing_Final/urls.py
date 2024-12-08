@@ -21,8 +21,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from LogIn.views import signup_view, login_view, logout_view
-from Recipes.views import add_review, recipe_by_category, recipe_detail, reviews_list
-from UserProfile.views import profile, edit_profile
+from Recipes.views import add_review, recipe_by_category, recipe_detail, reviews_list, recipe_list
+from UserProfile.views import profile, edit_profile, user_recipes
 from popular.views import popular
 
  
@@ -47,8 +47,9 @@ urlpatterns = [
     path('recipes/<str:category>/', recipe_by_category, name='recipe_by_category'),
     path('popular', popular, name='popular'),
     path('recipes/', include('Recipes.urls')),
-     path('recipe/<int:pk>/', recipe_detail, name='recipe_detail'),
-     path('reviews/',reviews_list, name='reviews_list'),
+    path('recipe/<int:pk>/', recipe_detail, name='recipe_detail'),
+    path('reviews/',reviews_list, name='reviews_list'),
+    path('user_recipes/', user_recipes, name='user_recipes'),
 ]
  
  

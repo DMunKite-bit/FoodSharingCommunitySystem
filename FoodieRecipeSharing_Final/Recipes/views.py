@@ -11,11 +11,43 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 import json
- 
+from django.db.models.functions import Coalesce
+from django.db.models import Value
 
+
+
+
+def recipe_list(request):
+    # Use Coalesce to set a default value of 0 for difficulty if it's None
+    posts = RecipePost.objects.annotate(
+        difficulty_with_default=Coalesce('difficulty', Value(0))
+    )
+    return render(request, 'recipe_list.html', {'posts': posts})
+
+@login_required
 def reviews_list(request):
-    reviews = Review.objects.all()
-    return render(request, 'recipes/reviews_list.html', {'reviews': reviews})
+    # Filter reviews to only show those created by the logged-in user
+    user_reviews = Review.objects.filter(user=request.user)
+    return render(request, 'recipes/reviews_list.html', {'reviews': user_reviews})
+
+def recipe_detail(request, pk):
+    recipe = get_object_or_404(RecipePost, pk=pk)
+    reviews = recipe.reviews.all()  # Fetch related reviews
+    return render(request, 'recipe_details.html', {
+        'recipe': recipe,
+        'reviews': reviews,
+    })
+
+
+
+def review_list(request):
+    # Get the logged-in user
+    user = request.user
+    
+    # Filter reviews for the logged-in user
+    reviews = Review.objects.filter(user=user)
+    
+    return render(request, 'reviews/review_list.html', {'reviews': reviews})
 
 def recipe_detail(request, pk):
     recipe = get_object_or_404(RecipePost, pk=pk)

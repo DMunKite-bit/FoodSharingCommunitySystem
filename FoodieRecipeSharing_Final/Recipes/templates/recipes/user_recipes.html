@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Recipes</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f6f1;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .recipes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .recipe-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .recipe-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recipe-item h3 {
+            font-size: 1.3rem;
+            margin: 15px;
+        }
+
+        .recipe-item .category {
+            font-weight: bold;
+            color: #f08a5d;
+            margin: 0 15px;
+        }
+
+        .recipe-item .description {
+            color: #555;
+            margin: 15px;
+        }
+
+        .recipe-item .ingredients,
+        .recipe-item .directions {
+            margin: 10px 15px;
+        }
+
+        .recipe-item .view-button {
+            display: block;
+            text-align: center;
+            background-color: #f08a5d;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .recipe-item .view-button:hover {
+            background-color: #e07b4b;
+        }
+    </style>
+</head>
+    <header>
+    {% include 'navbar.html' %}
+     </header>
+<body>
+    {% load static %}
+    <h1>Your Recipes</h1>
+
+    {% if user_recipes %}
+        <div class="recipes-container">
+            {% for recipe in user_recipes %}
+                <div class="recipe-item">
+                    <!-- Recipe Image -->
+                    {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }} Image">
+                    {% else %}
+                        <img src="{% static 'default_image.jpg' %}" alt="No image available">
+                    {% endif %}
+                    
+                    <div class="recipe-details">
+                        <h3>{{ recipe.title }}</h3>
+                        <p class="category">Category: {{ recipe.category }}</p>
+                        <p class="description">{{ recipe.description|truncatechars:100 }}</p>
+                        <p class="ingredients"><strong>Ingredients:</strong> {{ recipe.ingredients|truncatechars:100 }}</p>
+                        <p class="directions"><strong>Directions:</strong> {{ recipe.directions|truncatechars:100 }}</p>
+
+                        <!-- View Recipe Button -->
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="view-button">View Recipe</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have no recipes added yet.</p>
+    {% endif %}
+</body>
+<footer>
+    {% include 'footer.html' %}
+</footer>
+
+</html>

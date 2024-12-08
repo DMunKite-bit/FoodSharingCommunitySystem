@@ -149,6 +149,35 @@ body {
 .edit-profile-btn:hover {
     background-color: #e07b4b; /* Darker coral on hover */
 }
+
+.recipes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+}
+.recipe-item {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+.recipe-item h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+.recipe-item p {
+    color: #555;
+    margin: 5px 0;
+}
+.recipe-item a {
+    color: #f08a5d;
+    text-decoration: none;
+}
+.recipe-item a:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
 <body>
@@ -184,8 +213,7 @@ body {
             <div class="filters">
                 <h3>Filters</h3>
                 <ul>
-                    <li><a href="{% url 'HomePage:home' %}">HomePage</a></li>
-                    <li><a href="{% url 'recipe_list' %}">Recipes</a></li>
+                    <li><a href="{% url 'user_recipes' %}">Recipes</a></li>
                     <li><a href="{% url 'reviews_list' %}">Reviews</a></li>
                 </ul>
             </div>
@@ -193,14 +221,25 @@ body {
             <!-- Activity Section -->
             <div class="activity-section">
                 <h2>All Activity</h2>
-                <div class="icon">X</div>
-                <!-- Use profile username dynamically in the message -->
-                <div class="no-activity">Uh Oh!<br>Looks like {{ user.username }} has no activity!</div>
-            </div>
+                {% if user_recipes.exists %}
+                    <div class="recipes-list">
+                        {% for recipe in user_recipes %}
+                            <div class="recipe-item">
+                                <h3>{{ recipe.title }}</h3>
+                                <p>{{ recipe.description|truncatechars:100 }}</p>
+                                <a href="{% url 'recipe_detail' recipe.id %}">View Recipe</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="icon">😞</div>
+                    <div class="no-activity">Uh Oh!<br>Looks like {{ user.username }} has no activity!</div>
+                {% endif %}
+            </div>            
         </div>
     </div>
 </body>
-<footer>
+
 {% include 'footer.html' %}
-</footer>
+
 </html>
