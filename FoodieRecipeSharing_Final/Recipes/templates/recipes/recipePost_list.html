@@ -447,24 +447,42 @@
         function toggleBookmark(recipeId, button) {
             const isCurrentlyBookmarked = button.textContent.trim() === 'Unbookmark';
             
-            fetch(isCurrentlyBookmarked ? `/bookmark/remove/${recipeId}/` : `/bookmark/add/${recipeId}/`, {
+            const url = isCurrentlyBookmarked 
+                ? `/recipes/bookmark/remove/${recipeId}/` 
+                : `/recipes/bookmark/add/${recipeId}/`;
+            
+            fetch(url, {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
                     'X-CSRFToken': '{{ csrf_token }}'
-                }
+                },
+                credentials: 'same-origin'  // Important for sending cookies
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
+                    // Toggle button text and potentially update UI
                     button.textContent = data.is_bookmarked ? 'Unbookmark' : 'Bookmark';
+                    
+                    // Optional: Update the bookmarked state in the recipes array
+                    const recipe = recipes.find(r => r.id === recipeId);
+                    if (recipe) {
+                        recipe.isBookmarked = data.is_bookmarked;
+                    }
                 } else {
-                    alert(data.message || 'Failed to update bookmark');
+                    throw new Error(data.message || 'Failed to update bookmark');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to update bookmark');
+                console.error('Bookmark Error:', error);
+                alert(error.message || 'Failed to update bookmark');
             });
         }
 

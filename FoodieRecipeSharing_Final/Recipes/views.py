@@ -182,41 +182,55 @@ def add_review(request, post_id):
  
 @login_required
 def add_bookmark(request, recipe_id):
-    recipe = get_object_or_404(RecipePost, id=recipe_id)
-    try:
-        bookmark, created = Bookmark.objects.get_or_create(user=request.user, recipe=recipe)
-        return JsonResponse({
-            'success': True, 
-            'message': 'Bookmark added successfully',
-            'is_bookmarked': True
-        })
-    except Exception as e:
-        return JsonResponse({
-            'success': False, 
-            'message': str(e)
-        }, status=400)
+    if request.method == 'POST':
+        recipe = get_object_or_404(RecipePost, id=recipe_id)
+        try:
+            # Use get_or_create to prevent duplicate bookmarks
+            bookmark, created = Bookmark.objects.get_or_create(
+                user=request.user, 
+                recipe=recipe
+            )
+            return JsonResponse({
+                'success': True, 
+                'message': 'Bookmark added successfully',
+                'is_bookmarked': True
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'message': str(e)
+            }, status=400)
+    return JsonResponse({
+        'success': False, 
+        'message': 'Invalid request method'
+    }, status=405)
 
 @login_required
 def remove_bookmark(request, recipe_id):
-    recipe = get_object_or_404(RecipePost, id=recipe_id)
-    try:
-        bookmark = Bookmark.objects.filter(user=request.user, recipe=recipe)
-        if bookmark.exists():
-            bookmark.delete()
+    if request.method == 'POST':
+        recipe = get_object_or_404(RecipePost, id=recipe_id)
+        try:
+            bookmark = Bookmark.objects.filter(user=request.user, recipe=recipe)
+            if bookmark.exists():
+                bookmark.delete()
+                return JsonResponse({
+                    'success': True, 
+                    'message': 'Bookmark removed successfully',
+                    'is_bookmarked': False
+                })
             return JsonResponse({
-                'success': True, 
-                'message': 'Bookmark removed successfully',
-                'is_bookmarked': False
-            })
-        return JsonResponse({
-            'success': False, 
-            'message': 'Bookmark not found'
-        }, status=404)
-    except Exception as e:
-        return JsonResponse({
-            'success': False, 
-            'message': str(e)
-        }, status=400)
+                'success': False, 
+                'message': 'Bookmark not found'
+            }, status=404)
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'message': str(e)
+            }, status=400)
+    return JsonResponse({
+        'success': False, 
+        'message': 'Invalid request method'
+    }, status=405)
 
 @login_required
 def bookmark_list(request):
