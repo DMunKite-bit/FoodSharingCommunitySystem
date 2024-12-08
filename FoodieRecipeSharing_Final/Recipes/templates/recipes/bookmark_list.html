@@ -61,9 +61,16 @@
             padding: 10px 15px;
             border-radius: 4px;
             font-weight: bold;
+            border: none;
+            cursor: pointer;
         }
         .btn-danger:hover {
             background-color: #a71d2a;
+        }
+        #no-bookmarks {
+            text-align: center;
+            color: #666;
+            margin-top: 50px;
         }
     </style>
 </head>
@@ -75,9 +82,9 @@
     </header>
     <main>
         <h1>Bookmarked Recipes</h1>
-        <ul>
+        <ul id="bookmarks-list">
             {% for bookmark in bookmarks %}
-                <li>
+                <li data-recipe-id="{{ bookmark.recipe.pk }}" class="bookmark-item">
                     {% if bookmark.recipe.image %}
                         <img src="{{ bookmark.recipe.image.url }}" alt="{{ bookmark.recipe.title }}">
                     {% endif %}
@@ -85,16 +92,64 @@
                     <p><strong>Posted by:</strong> {{ bookmark.recipe.user.username }}</p>
                     <p><strong>Category:</strong> {{ bookmark.recipe.category }}</p>
                     <a href="{% url 'recipe_detail' bookmark.recipe.pk %}" class="button">View Recipe</a>
-                    <form method="POST" action="{% url 'remove_bookmark' bookmark.recipe.pk %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-danger">Remove Bookmark</button>
-                    </form>
+                    <button 
+                        type="button" 
+                        class="btn-danger remove-bookmark" 
+                        data-recipe-id="{{ bookmark.recipe.pk }}">
+                        Remove Bookmark
+                    </button>
                 </li>
             {% empty %}
-                <li>No bookmarks available.</li>
+                <li id="no-bookmarks">No bookmarks available.</li>
             {% endfor %}
         </ul>
     </main>
     {% include 'footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const csrfToken = '{{ csrf_token }}';
+            const bookmarksList = document.getElementById('bookmarks-list');
+
+            bookmarksList.addEventListener('click', (event) => {
+                const removeButton = event.target.closest('.remove-bookmark');
+                if (removeButton) {
+                    const recipeId = removeButton.getAttribute('data-recipe-id');
+                    const bookmarkItem = removeButton.closest('.bookmark-item');
+
+                    fetch(`/recipes/bookmark/remove/${recipeId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': csrfToken
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the bookmark item from the list
+                            bookmarkItem.remove();
+
+                            // Check if list is now empty and show "No bookmarks" message
+                            if (bookmarksList.children.length === 0) {
+                                const noBookmarksMessage = document.createElement('li');
+                                noBookmarksMessage.id = 'no-bookmarks';
+                                noBookmarksMessage.textContent = 'No bookmarks available.';
+                                bookmarksList.appendChild(noBookmarksMessage);
+                            }
+                        } else {
+                            throw new Error(data.message || 'Failed to remove bookmark');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Bookmark Removal Error:', error);
+                        alert(error.message || 'Failed to remove bookmark');
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

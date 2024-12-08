@@ -33,10 +33,19 @@ def reviews_list(request):
 def recipe_detail(request, pk):
     recipe = get_object_or_404(RecipePost, pk=pk)
     reviews = recipe.reviews.all()  # Fetch related reviews
-    return render(request, 'recipe_details.html', {
+    is_bookmarked = False
+    if request.user.is_authenticated:
+        is_bookmarked = Bookmark.objects.filter(
+            user=request.user, 
+            recipe=recipe
+        ).exists()
+    
+    context = {
         'recipe': recipe,
         'reviews': reviews,
-    })
+        'is_bookmarked': is_bookmarked,
+    }
+    return render(request, 'recipes/recipe_details.html', context)
 
 
 

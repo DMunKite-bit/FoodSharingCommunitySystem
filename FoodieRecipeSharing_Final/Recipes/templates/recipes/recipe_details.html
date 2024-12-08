@@ -174,15 +174,10 @@
 
       <div>
         <!-- Bookmark Button -->
-          {% if user.is_authenticated %}
-          <form id="bookmarkForm" method="POST" style="display: inline;">
-            {% csrf_token %}
-            {% if is_bookmarked %}
-              <button type="submit" id="removeBookmark" class="btn btn-danger">Unbookmark</button>
-            {% else %}
-              <button type="submit" id="addBookmark" class="btn btn-primary">Bookmark</button>
-            {% endif %}
-          </form>
+        {% if user.is_authenticated %}
+        <button id="bookmarkButton" class="btn btn-primary" onclick="toggleBookmark({{ recipe.id }}, this)">
+            {% if is_bookmarked %}Unbookmark{% else %}Bookmark{% endif %}
+        </button>
         {% endif %}
 
         <!-- Edit & Delete Buttons -->
@@ -240,6 +235,36 @@
         }
       });
     }
+
+    function toggleBookmark(recipeId, button) {
+      const isCurrentlyBookmarked = button.textContent.trim() === 'Unbookmark';
+      
+      const url = isCurrentlyBookmarked 
+          ? `/recipes/bookmark/remove/${recipeId}/` 
+          : `/recipes/bookmark/add/${recipeId}/`;
+      
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': '{{ csrf_token }}'
+          },
+          credentials: 'same-origin'
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              button.textContent = data.is_bookmarked ? 'Unbookmark' : 'Bookmark';
+          } else {
+              throw new Error(data.message || 'Failed to update bookmark');
+          }
+      })
+      .catch(error => {
+          console.error('Bookmark Error:', error);
+          alert(error.message || 'Failed to update bookmark');
+      });
+  }
   </script>
 </body>
 </html>
