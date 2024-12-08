@@ -8,7 +8,6 @@ from django.conf import settings # type: ignore
 class RecipePost(models.Model):
     title = models.CharField(max_length=200)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True) #User, on_delete=models.CASCADE
-    difficulty = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Restrict to 1-5
     description = models.TextField(default='')
     category = models.CharField(max_length=50, default='Uncategorized')
     ingredients = models.TextField()
@@ -29,9 +28,6 @@ class RecipePost(models.Model):
         null=True, 
         blank=True
     )  # Associated user, nullable and optional
-    difficulty = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )  # Difficulty level (1-5)
     description = models.TextField(default='')  # Brief description of the recipe
     category = models.CharField(
         max_length=50, 
@@ -49,8 +45,6 @@ class RecipePost(models.Model):
 
     def __str__(self):
         return self.title  # String representation of the model
-    def difficulty_stars(self):
-        return '★' * self.difficulty + '☆' * (5 - self.difficulty)
     
 class Review(models.Model):
     recipe = models.ForeignKey(RecipePost, related_name='reviews', on_delete=models.CASCADE)

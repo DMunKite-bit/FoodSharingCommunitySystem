@@ -149,12 +149,6 @@
       <div class="recipe-content">
         <div class="recipe-metadata">
           <p><strong>Posted by:</strong> {{ recipe.user }}</p>
-          <p><strong>Difficulty:</strong>
-            <span class="difficulty-stars">
-              {% for i in recipe.difficulty|range_star %} ★ {% endfor %}
-              {% for i in 5|range_star|slice:":recipe.difficulty" %} <span class="empty">★</span> {% endfor %}
-            </span>
-          </p>
           <p><strong>Category:</strong> {{ recipe.category }}</p>
           <p><strong>Created At:</strong> {{ recipe.created_at|date:"F j, Y" }}</p>
         </div>

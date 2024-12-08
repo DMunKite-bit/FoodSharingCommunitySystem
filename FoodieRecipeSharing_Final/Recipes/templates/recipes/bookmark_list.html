@@ -84,7 +84,6 @@
                     <p class="recipe-title">{{ bookmark.recipe.title }}</p>
                     <p><strong>Posted by:</strong> {{ bookmark.recipe.user.username }}</p>
                     <p><strong>Category:</strong> {{ bookmark.recipe.category }}</p>
-                    <p><strong>Difficulty:</strong> {{ bookmark.recipe.difficulty }}</p>
                     <a href="{% url 'recipe_detail' bookmark.recipe.pk %}" class="button">View Recipe</a>
                     <form method="POST" action="{% url 'remove_bookmark' bookmark.recipe.pk %}" style="display: inline;">
                         {% csrf_token %}
