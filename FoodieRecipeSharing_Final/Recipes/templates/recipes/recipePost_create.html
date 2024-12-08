@@ -85,7 +85,7 @@
     <header>
         {% include 'navbar.html' %}
     </header>
-    
+
     <div class="container">
         <h1>Create a New Recipe</h1>
         <form method="POST" enctype="multipart/form-data">
@@ -95,5 +95,8 @@
         </form>
         <a href="{% url 'recipe_list' %}" class="back-link">Go Back to Recipes</a>
     </div>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
 </body>
 </html>

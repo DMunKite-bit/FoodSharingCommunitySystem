@@ -1,6 +1,8 @@
 #Recipes/urls.py
 
 from django.urls import path
+
+from Recipes.views import RecipePostUpdateView, RecipePostDeleteView
 from . import views
 
 urlpatterns = [
@@ -12,4 +14,6 @@ urlpatterns = [
     path('bookmarks/', views.bookmark_list, name='bookmark_list'),
     path('search/', views.search_recipes, name='recipe_search'),
     path('reviews/', views.reviews_list, name='reviews_list'),
+    path('<int:pk>/edit/', RecipePostUpdateView.as_view(), name='recipe_edit'),
+    path('<int:pk>/delete/', RecipePostDeleteView.as_view(), name='recipe_delete'),
 ]

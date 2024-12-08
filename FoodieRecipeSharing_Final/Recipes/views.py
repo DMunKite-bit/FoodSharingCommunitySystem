@@ -1,7 +1,7 @@
 #Recipes/views.py
 from django.urls import reverse_lazy  # type: ignore
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView  # type: ignore
-from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore # Add this import
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin  # type: ignore # Add this import
 from .models import RecipePost, Review , Bookmark
 from .forms import RecipePostForm
 from django.shortcuts import redirect, render, get_object_or_404
@@ -94,24 +94,27 @@ class RecipePostCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-class RecipePostUpdateView(LoginRequiredMixin, UpdateView):
+class RecipePostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = RecipePost
     form_class = RecipePostForm
     template_name = 'recipes/recipePost_update.html'
     success_url = reverse_lazy('recipe_list')
 
-    def get_queryset(self):
-        # Restrict updates to recipes owned by the logged-in user
-        return self.model.objects.filter(user=self.request.user)
+    def get_success_url(self):
+        return reverse_lazy('recipe_list')  # Or redirect to recipe detail
+    
+    def test_func(self):
+        recipe = self.get_object()
+        return self.request.user == recipe.user
 
-class RecipePostDeleteView(LoginRequiredMixin, DeleteView):
+class RecipePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = RecipePost
     template_name = 'recipes/recipePost_confirm_delete.html'
     success_url = reverse_lazy('recipe_list')
 
-    def get_queryset(self):
-        # Restrict deletions to recipes owned by the logged-in user
-        return self.model.objects.filter(user=self.request.user)
+    def test_func(self):
+        recipe = self.get_object()
+        return self.request.user == recipe.user
 
 def cuisine_view(request):
     # Get all unique categories from the RecipePost model

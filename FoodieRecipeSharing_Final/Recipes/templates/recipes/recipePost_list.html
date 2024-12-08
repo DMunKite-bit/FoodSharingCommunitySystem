@@ -246,118 +246,136 @@
 
     <script>
         const csrf_Token = '{{csfr_token}}'
-         document.addEventListener('DOMContentLoaded', () => {
-            const recipeCards = document.querySelectorAll('.recipe-card');
-            
-            recipeCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const recipeId = card.getAttribute('data-recipe-id');
-                    openRecipeModal(parseInt(recipeId));
+                 document.addEventListener('DOMContentLoaded', () => {
+                    const recipeCards = document.querySelectorAll('.recipe-card');
+                    
+                    recipeCards.forEach(card => {
+                        card.addEventListener('click', () => {
+                            const recipeId = card.getAttribute('data-recipe-id');
+                            openRecipeModal(parseInt(recipeId));
+                        });
+                    });
                 });
-            });
-        });
-
-        document.addEventListener('click', function (event) {
-            if (event.target.matches('.bookmark-btn')) {
-                const button = event.target;
-                const recipeId = button.getAttribute('data-recipe-id');
-                toggleBookmark(recipeId, button);
-            }
-        });
-
-        const recipes = [
-            {% for post in posts %}
-            {
-                id: {{ post.id }},
-                title: "{{ post.title|escapejs }}",
-                image: "{{ post.image.url|default:'' }}",
-                user: "{{ post.user.username|default:'Unknown' }}",
-                description: "{{ post.description|escapejs }}",
-                ingredients: "{{ post.ingredients|escapejs }}",
-                directions: "{{ post.directions|escapejs }}",
-                reviews: [
-                    {% for review in post.reviews.all %}
-                    {
-                        user: "{{ review.user.username }}",
-                        text: "{{ review.text|escapejs }}",
-                        createdAt: "{{ review.created_at }}"
-                    }{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                ],
-                isBookmarked: {% if post.id in bookmarked_recipes %}true{% else %}false{% endif %}
-            }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
-
-        let currentRecipeIndex=0;
-
-        function openRecipeModal(recipeId) {
-            console.log("Opening recipe modal for ID:", recipeId);
-            console.log("Available recipes:", recipes);
-
-            // Debug: find the recipe
-            const recipe = recipes.find(r => r.id === recipeId);
-            
-            if (!recipe) {
-                console.error("Recipe not found for ID:", recipeId);
-                return;
-            }
-
-            console.log("Found recipe:", recipe);
-
-            // Construct modal content with more robust error handling
-            const modalContent = `
-                <div class="recipe-modal-details" data-recipe-id="${recipe.id}">
-                    <h1>${escapeHtml(recipe.title)}</h1>
-                    
-                    ${recipe.image ? `<img src="${recipe.image}" style="width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 20px;">` : ''}
-                    
-                    <div class="recipe-section">
-                        <h3>Description</h3>
-                        <p>${escapeHtml(recipe.description || 'No description available')}</p>
-                    </div>
-                    
-                    <div class="recipe-section">
-                        <h3>Ingredients</h3>
-                        <p>${escapeHtml(recipe.ingredients || 'No ingredients listed')}</p>
-                    </div>
-                    
-                    <div class="recipe-section">
-                        <h3>Directions</h3>
-                        <p>${escapeHtml(recipe.directions || 'No directions provided')}</p>
-                    </div>
-
-                    <div class="reviews-section">
-                        <h3>Reviews</h3>
-                        <div class="review-list">
-                            ${recipe.reviews.length > 0 
-                                ? recipe.reviews.map(review => `
-                                    <div class="review-item">
-                                        <strong>${escapeHtml(review.user)}:</strong> 
-                                        ${escapeHtml(review.text)}
-                                    </div>
-                                `).join('') 
-                                : '<p>No reviews yet</p>'}
+        
+            const recipes = [
+                {% for post in posts %}
+                {
+                    id: {{ post.id }},
+                    title: "{{ post.title|escapejs }}",
+                    image: "{{ post.image.url|default:'' }}",
+                    user: "{{ post.user.username|default:'Unknown' }}",
+                    description: "{{ post.description|escapejs }}",
+                    ingredients: "{{ post.ingredients|escapejs }}",
+                    directions: "{{ post.directions|escapejs }}",
+                    reviews: [
+                        {% for review in post.reviews.all %}
+                        {
+                            user: "{{ review.user.username }}",
+                            text: "{{ review.text|escapejs }}",
+                            createdAt: "{{ review.created_at }}"
+                        }{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    isBookmarked: {% if post.id in bookmarked_recipes %}true{% else %}false{% endif %},
+                    isUserRecipe: {% if user == post.user %}true{% else %}false{% endif %}
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+        
+            let currentRecipeIndex = 0;
+        
+            function openRecipeModal(recipeId) {
+                const recipe = recipes.find(r => r.id === recipeId);
+                
+                if (!recipe) {
+                    console.error("Recipe not found for ID:", recipeId);
+                    return;
+                }
+        
+                const modalContent = `
+                    <div class="recipe-modal-details" data-recipe-id="${recipe.id}">
+                        ${recipe.image ? `
+                            <div class="recipe-image">
+                                <img src="${recipe.image}" alt="${escapeHtml(recipe.title)}" style="width: 100%; max-height: 400px; object-fit: cover;">
+                            </div>
+                        ` : ''}
+                        
+                        <div class="recipe-header">
+                            <h1>${escapeHtml(recipe.title)}</h1>
+                            
+                            ${recipe.isUserRecipe ? `
+                                <div class="recipe-actions">
+                                    <a href="/recipes/${recipe.id}/edit/" class="edit-btn">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="/recipes/${recipe.id}/delete/" class="delete-btn" onclick="confirmDeleteRecipe(${recipe.id}); return false;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+        
+                        <div class="recipe-section">
+                            <h3>Description</h3>
+                            <p>${escapeHtml(recipe.description || 'No description available')}</p>
                         </div>
                         
-                        <div class="review-form">
-                            <textarea class="review-input" id="reviewInput" placeholder="Write a review..."></textarea>
-                            <div class="review-buttons">
-                                <button onclick="submitReview(${recipe.id})">Submit</button>
-                                <button onclick="cancelReview()">Cancel</button>
+                        <div class="recipe-section">
+                            <h3>Ingredients</h3>
+                            <p>${escapeHtml(recipe.ingredients || 'No ingredients listed')}</p>
+                        </div>
+                        
+                        <div class="recipe-section">
+                            <h3>Directions</h3>
+                            <p>${escapeHtml(recipe.directions || 'No directions provided')}</p>
+                        </div>
+        
+                        <div class="reviews-section">
+                            <h3>Reviews</h3>
+                            <div class="review-list">
+                                ${recipe.reviews.length > 0 
+                                    ? recipe.reviews.map(review => `
+                                        <div class="review-item">
+                                            <strong>${escapeHtml(review.user)}:</strong> 
+                                            ${escapeHtml(review.text)}
+                                        </div>
+                                    `).join('') 
+                                    : '<p>No reviews yet</p>'}
+                            </div>
+                            
+                            <div class="review-form">
+                                <textarea class="review-input" id="reviewInput" placeholder="Write a review..."></textarea>
+                                <div class="review-buttons">
+                                    <button onclick="submitReview(${recipe.id})">Submit</button>
+                                    <button onclick="cancelReview()">Cancel</button>
+                                </div>
+                            </div>
+        
+                            <div style="margin-top: 15px;">
+                                <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id}, this)" data-recipe-id="${recipe.id}">
+                                    ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                                </button>
                             </div>
                         </div>
-
-                        <div style="margin-top: 15px;">
-                            <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id}, this)" data-recipe-id="${recipe.id}">
-                                ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
-                            </button>
-                        </div>
                     </div>
-                </div>
-            `;
-
-            // Escape HTML to prevent XSS
+                `;
+        
+                const modalContentElement = document.getElementById('recipeModalContent');
+                if (modalContentElement) {
+                    modalContentElement.innerHTML = modalContent;
+                    document.getElementById('recipeModal').style.display = 'flex';
+                } else {
+                    console.error("Modal content element not found");
+                }
+            }
+        
+            function confirmDeleteRecipe(recipeId) {
+                if (confirm('Are you sure you want to delete this recipe?')) {
+                    // Redirect to the delete confirmation page
+                    window.location.href = `/recipes/${recipeId}/delete/`;
+                }
+            }
+        
             function escapeHtml(unsafe) {
                 return unsafe
                     .replace(/&/g, "&amp;")
@@ -366,123 +384,107 @@
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             }
-
-            // Set the modal content
-            const modalContentElement = document.getElementById('recipeModalContent');
-            if (modalContentElement) {
-                modalContentElement.innerHTML = modalContent;
-                document.getElementById('recipeModal').style.display = 'flex';
-            } else {
-                console.error("Modal content element not found");
+        
+            function closeRecipeModal() {
+                document.getElementById('recipeModal').style.display = 'none';
             }
-        }
-
-        function closeRecipeModal() {
-            document.getElementById('recipeModal').style.display = 'none';
-        }
-
-        function navigateRecipe(direction) {
-            const currentRecipeId = parseInt(document.querySelector('#recipeModalContent [data-recipe-id]').getAttribute('data-recipe-id'));
-            currentRecipeIndex = recipes.findIndex(r => r.id === currentRecipeId);
-
-            // Navigate to the next or previous recipe
-            currentRecipeIndex += direction;
-            
-            // Wrap around if at the beginning or end
-            if (currentRecipeIndex < 0) {
-                currentRecipeIndex = recipes.length - 1;
-            } else if (currentRecipeIndex >= recipes.length) {
-                currentRecipeIndex = 0;
-            }
-
-            const recipe = recipes[currentRecipeIndex];
-            openRecipeModal(recipe.id);
-        }
-
-        function submitReview(recipeId) {
-            const reviewText = document.getElementById('reviewInput').value.trim();
-            if (!reviewText) {
-                alert('Review cannot be empty');
-                return;
-            }
-
-            // Django AJAX review submission logic here
-            fetch(`/add_review/${recipeId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ text: reviewText })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update reviews dynamically
-                    const reviewList = document.querySelector('.review-list');
-                    const newReview = document.createElement('div');
-                    newReview.className = 'review-item';
-                    newReview.innerHTML = `<strong>${data.username}:</strong> ${reviewText}`;
-                    reviewList.appendChild(newReview);
-                    document.getElementById('reviewInput').value = '';
-                } else {
-                    alert('Failed to submit review');
+        
+            function navigateRecipe(direction) {
+                const currentRecipeId = parseInt(document.querySelector('#recipeModalContent [data-recipe-id]').getAttribute('data-recipe-id'));
+                currentRecipeIndex = recipes.findIndex(r => r.id === currentRecipeId);
+        
+                currentRecipeIndex += direction;
+                
+                if (currentRecipeIndex < 0) {
+                    currentRecipeIndex = recipes.length - 1;
+                } else if (currentRecipeIndex >= recipes.length) {
+                    currentRecipeIndex = 0;
                 }
-            });
-        }
-
-        function cancelReview() {
-            document.getElementById('reviewInput').value = '';
-        }
-
-        function toggleBookmark(recipeId, button) {
-            const isCurrentlyBookmarked = button.textContent.trim() === 'Unbookmark';
-            
-            const url = isCurrentlyBookmarked 
-                ? `/recipes/bookmark/remove/${recipeId}/` 
-                : `/recipes/bookmark/add/${recipeId}/`;
-            
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                credentials: 'same-origin'  // Important for sending cookies
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        
+                const recipe = recipes[currentRecipeIndex];
+                openRecipeModal(recipe.id);
+            }
+        
+            function submitReview(recipeId) {
+                const reviewText = document.getElementById('reviewInput').value.trim();
+                if (!reviewText) {
+                    alert('Review cannot be empty');
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Toggle button text and potentially update UI
-                    button.textContent = data.is_bookmarked ? 'Unbookmark' : 'Bookmark';
-                    
-                    // Optional: Update the bookmarked state in the recipes array
-                    const recipe = recipes.find(r => r.id === recipeId);
-                    if (recipe) {
-                        recipe.isBookmarked = data.is_bookmarked;
+        
+                fetch(`/add_review/${recipeId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ text: reviewText })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const reviewList = document.querySelector('.review-list');
+                        const newReview = document.createElement('div');
+                        newReview.className = 'review-item';
+                        newReview.innerHTML = `<strong>${data.username}:</strong> ${reviewText}`;
+                        reviewList.appendChild(newReview);
+                        document.getElementById('reviewInput').value = '';
+                    } else {
+                        alert('Failed to submit review');
                     }
-                } else {
-                    throw new Error(data.message || 'Failed to update bookmark');
-                }
-            })
-            .catch(error => {
-                console.error('Bookmark Error:', error);
-                alert(error.message || 'Failed to update bookmark');
-            });
-        }
-
-        // Close modal if clicked outside
-        document.getElementById('recipeModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeRecipeModal();
+                });
             }
-        });
-    </script>
+        
+            function cancelReview() {
+                document.getElementById('reviewInput').value = '';
+            }
+        
+            function toggleBookmark(recipeId, button) {
+                const isCurrentlyBookmarked = button.textContent.trim() === 'Unbookmark';
+                
+                const url = isCurrentlyBookmarked 
+                    ? `/recipes/bookmark/remove/${recipeId}/` 
+                    : `/recipes/bookmark/add/${recipeId}/`;
+                
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        button.textContent = data.is_bookmarked ? 'Unbookmark' : 'Bookmark';
+                        
+                        const recipe = recipes.find(r => r.id === recipeId);
+                        if (recipe) {
+                            recipe.isBookmarked = data.is_bookmarked;
+                        }
+                    } else {
+                        throw new Error(data.message || 'Failed to update bookmark');
+                    }
+                })
+                .catch(error => {
+                    console.error('Bookmark Error:', error);
+                    alert(error.message || 'Failed to update bookmark');
+                });
+            }
+        
+            // Close modal if clicked outside
+            document.getElementById('recipeModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeRecipeModal();
+                }
+            });
+        </script>
 </body>
 </html>
