@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <title>{{ recipe.title }} | Recipe Details</title>
   <style>
     :root {
@@ -134,6 +135,67 @@
       border-radius: var(--border-radius);
       margin-bottom: 1rem;
     }
+
+    .recipe-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 1rem;
+    }
+
+    #bookmarkButton {
+        background-color: #f9a825;  /* Same as review submit button */
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    #bookmarkButton:hover {
+        background-color: #ffc107;  /* Slightly lighter shade for hover effect */
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .edit-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .edit-btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+    .delete-btn:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+    }
+
+    .edit-btn i, .delete-btn i {
+        font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
@@ -172,20 +234,22 @@
           </ol>
         </div>
 
-      <div>
-        <!-- Bookmark Button -->
-        {% if user.is_authenticated %}
-        <button id="bookmarkButton" class="btn btn-primary" onclick="toggleBookmark({{ recipe.id }}, this)">
-            {% if is_bookmarked %}Unbookmark{% else %}Bookmark{% endif %}
-        </button>
-        {% endif %}
-
-        <!-- Edit & Delete Buttons -->
-        {% if user.is_authenticated and user == recipe.user %}
-          <a href="{% url 'recipe_edit' recipe.id %}" class="btn btn-warning">Edit</a>
-          <a href="{% url 'recipe_delete' recipe.id %}" class="btn btn-danger">Delete</a>
-        {% endif %}
-      </div>
+        <div class="recipe-actions">
+            {% if user.is_authenticated %}
+            <button id="bookmarkButton" onclick="toggleBookmark({{ recipe.id }}, this)">
+                {% if is_bookmarked %}Unbookmark{% else %}Bookmark{% endif %}
+            </button>
+            {% endif %}
+        
+            {% if user.is_authenticated and user == recipe.user %}
+                <a href="{% url 'recipe_edit' recipe.id %}" class="edit-btn">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'recipe_delete' recipe.id %}" class="delete-btn">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            {% endif %}
+        </div>
 
         <div class="recipe-reviews">
           <h2 class="section-title">Reviews</h2>

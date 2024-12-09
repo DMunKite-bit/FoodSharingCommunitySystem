@@ -16,14 +16,6 @@ from django.db.models import Value
 
 
 
-
-def recipe_list(request):
-    # Use Coalesce to set a default value of 0 for difficulty if it's None
-    posts = RecipePost.objects.annotate(
-        difficulty_with_default=Coalesce('difficulty', Value(0))
-    )
-    return render(request, 'recipe_list.html', {'posts': posts})
-
 @login_required
 def reviews_list(request):
     # Filter reviews to only show those created by the logged-in user
@@ -291,7 +283,7 @@ def bookmark_list(request):
  
 def search_recipes(request):
     # Display some initial recipes before search
-    initial_recipes = RecipePost.objects.all()[:6]  # First 6 recipes
+    initial_recipes = RecipePost.objects.all()[:8]  # First 6 recipes
     
     # Check if there's a search query
     query = request.GET.get('q', '').strip()

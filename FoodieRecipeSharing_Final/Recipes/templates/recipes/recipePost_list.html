@@ -189,15 +189,29 @@
         }
 
         .bookmark-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
+            padding: 10px 20px;
+            font-size: 1rem;
             font-weight: 600;
+            border-radius: 5px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background-color: #ffc107;  /* Yellow color */
+            color: white;
+            border: none;
         }
 
         .bookmark-btn:hover {
-            text-decoration: underline;
+            background-color: #ffca28;  /* Slightly lighter yellow on hover */
+            transform: scale(1.05);
+        }
+
+        .bookmark-btn i {
+            font-size: 1.2rem;
         }
 
         .recipe-actions {
@@ -349,7 +363,11 @@
                     
                     <div class="recipe-header">
                         <h1>${escapeHtml(recipe.title)}</h1>
-                        
+                
+                        <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id}, this)" data-recipe-id="${recipe.id}">
+                            <i class="fas fa-bookmark"></i> ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                        </button>
+
                         ${recipe.isUserRecipe ? 
                             `<div class="recipe-actions">
                                 <a href="/recipes/${recipe.id}/edit/" class="edit-btn">
@@ -398,12 +416,6 @@
                                 <button onclick="cancelReview()">Cancel</button>
                             </div>
                         </div>
-    
-                        <div style="margin-top: 15px;">
-                            <button class="bookmark-btn" onclick="toggleBookmark(${recipe.id}, this)" data-recipe-id="${recipe.id}">
-                                ${recipe.isBookmarked ? 'Unbookmark' : 'Bookmark'}
-                            </button>
-                        </div>
                     </div>
                 </div>
             `;
@@ -417,12 +429,6 @@
             }
         }
     
-        function confirmDeleteRecipe(recipeId) {
-            if (confirm('Are you sure you want to delete this recipe?')) {
-                // Redirect to the delete confirmation page
-                window.location.href = `/recipes/${recipeId}/delete/`;
-            }
-        }
     
         function escapeHtml(unsafe) {
             return unsafe
