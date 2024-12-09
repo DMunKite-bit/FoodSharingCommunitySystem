@@ -81,11 +81,37 @@
         .recipe-item .view-button:hover {
             background-color: #e07b4b;
         }
+
+        /* Back Button Style */
+        .back-button {
+            display: inline-block;
+            background-color: #f08a5d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px auto;
+            text-align: center;
+            display: block;
+            max-width: 200px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #e07b4b;
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
-    <header>
+<header>
     {% include 'navbar.html' %}
-     </header>
+</header>
 <body>
     {% load static %}
     <h1>Your Recipes</h1>
@@ -117,9 +143,13 @@
     {% else %}
         <p>You have no recipes added yet.</p>
     {% endif %}
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <a href="{% url 'profile' %}" class="back-button">Back to Profile</a>
+    </div>
 </body>
 <footer>
     {% include 'footer.html' %}
 </footer>
-
 </html>

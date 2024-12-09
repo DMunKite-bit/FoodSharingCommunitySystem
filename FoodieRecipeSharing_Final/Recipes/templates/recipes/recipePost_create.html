@@ -5,79 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add a Recipe</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f3f3f3;
+        /* General Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
 
         .container {
-            max-width: 700px;
+            max-width: 800px;
             margin: 40px auto;
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #444;
             text-align: center;
+            margin-bottom: 25px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         label {
             font-weight: bold;
             margin-bottom: 5px;
+            color: #555;
         }
 
         input[type="text"], textarea, select, input[type="file"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
         }
 
         textarea {
-            height: 100px;
+            height: 120px;
             resize: vertical;
         }
 
         button {
-            background-color: #28a745;
-            color: #fff;
-            padding: 12px;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 12px 15px;
             border: none;
-            border-radius: 4px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         button:hover {
-            background-color: #218838;
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
 
         .back-link {
             display: block;
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
             color: #007bff;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            transition: color 0.3s;
         }
 
         .back-link:hover {
+            color: #0056b3;
             text-decoration: underline;
+        }
+
+        /* Error message styles */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: -10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -92,9 +137,14 @@
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Save Recipe</button>
+            <!-- Placeholder for error messages -->
+            {% if form.errors %}
+                <div class="error-message">Please correct the errors below and try again.</div>
+            {% endif %}
         </form>
         <a href="{% url 'recipe_list' %}" class="back-link">Go Back to Recipes</a>
     </div>
+    
     <footer>
         {% include 'footer.html' %}
     </footer>
