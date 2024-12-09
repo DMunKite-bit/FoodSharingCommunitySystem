@@ -3,53 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Recipe Post</title>
+    <title>Delete Recipe?</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #dc3545;
+            --text-color: #2d3436;
+            --background-color: #f7f7f7;
+            --card-background: #ffffff;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+
+        .container {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
         h1 {
-            color: #333;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
         }
-        form {
-            margin-bottom: 20px;
+
+        p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #000000;
         }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
         button, .button {
-            padding: 10px 15px;
+            padding: 0.75rem 1.5rem;
             color: #fff;
-            background-color: #007bff;
             border: none;
             border-radius: 4px;
-            text-align: center;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-size: 1rem;
         }
-        button:hover, .button:hover {
-            background-color: #0056b3;
+
+        button {
+            background-color: var(--primary-color);
         }
+
         .button {
-            display: inline-block;
-            margin-top: 10px;
+            background-color: var(--secondary-color);
+        }
+
+        button:hover, .button:hover {
+            filter: brightness(110%);
+            transform: scale(1.05);
+        }
+
+        button:active, .button:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button, .button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
+    <div class="container">
         <h1>Confirm Delete Recipe</h1>
         <p>Are you sure you want to delete "{{ object.title }}"?</p>
-    </header>
-
-    <main>
         <form method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Confirm</button>
-            <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Cancel</a>
+            <div class="buttons">
+                <button type="submit">Confirm</button>
+                <a href="{% url 'recipe_list' %}" class="button">Cancel</a>
+            </div>
         </form>
-    </main>
+    </div>
 </body>
 </html>

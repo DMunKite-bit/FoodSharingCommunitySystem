@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuisine</title>
+    <title>Categories</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -100,14 +100,14 @@
     {% include 'navbar.html' %}
 </header>
 <body>
-    <h1>Category</h1>
+    <h1>CATEGORIES</h1>
     
     <!-- Dropdown for category selection -->
     {% if show_dropdown %}
     <div class="dropdown">
         <form method="GET" action="">
             <select name="category" onchange="this.form.submit()">
-                <option value="">All Categories</option>
+                <option value="">ALL CATEGORIES</option>
                 {% for category in categories %}
                     <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
                         {{ category }}
