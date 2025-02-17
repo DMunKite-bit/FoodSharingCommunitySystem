@@ -14,12 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from django.contrib import admin # type: ignore
+from django.urls import path, include # type: ignore
 from Recipes.views import RecipePostCreateView, RecipePostListView, RecipePostUpdateView, RecipePostDeleteView, cuisine_view
-from django.conf import settings
-from django.conf.urls.static import static
-from django.shortcuts import redirect
+from django.conf import settings # type: ignore
+from django.conf.urls.static import static # type: ignore
+from django.shortcuts import redirect # type: ignore
 from LogIn.views import signup_view, login_view, logout_view
 from Recipes.views import add_review, recipe_by_category, recipe_detail, reviews_list, recipe_list
 from UserProfile.views import profile, edit_profile, user_recipes

@@ -323,7 +323,7 @@
             {
                 id: {{ post.id }},
                 title: "{{ post.title|escapejs }}",
-                image: "{{ post.image.url|default:'' }}",
+                image: {% if post.image %}"{{ post.image.url }}"{% else %}null{% endif %},
                 user: "{{ post.user.username|default:'Unknown' }}",
                 description: "{{ post.description|escapejs }}",
                 ingredients: "{{ post.ingredients|escapejs }}",
